@@ -22,4 +22,4 @@ Gunakan **User Management** untuk mengganti kredensial awal segera setelah login
 
 ## Filter akses data Paket POS
 
-Tidak ada perubahan skema database. Query tabel `tb_terima_paket` membatasi `kd_penerima` berdasarkan username sesi aplikasi; `HRD2` dan `HRD4` dikecualikan dari filter untuk tetap melihat seluruh daftar. Endpoint baca dan perubahan data menggunakan filter pemilik yang sama. Untuk input HRD4, nilai modal disimpan ke kolom `inputer` yang sudah ada. Tidak ada migrasi atau perubahan tabel.
+Tidak ada perubahan skema database. Query tabel `tb_terima_paket` membatasi `kd_penerima` berdasarkan username sesi aplikasi; `HRD2` dan `HRD4` dikecualikan dari filter untuk tetap melihat seluruh daftar. Endpoint baca dan perubahan data menggunakan filter pemilik yang sama. Untuk input HRD4, nilai modal disimpan ke kolom `inputer` yang sudah ada. Batas ALIF hanya-konfirmasi diterapkan pada aplikasi dan tidak mengubah tabel. Tidak ada migrasi atau perubahan tabel.

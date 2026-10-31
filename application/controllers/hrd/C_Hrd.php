@@ -1699,7 +1699,7 @@ class C_Hrd extends CI_Controller
             $row[] = $status_label;
 
 
-            if (in_array(
+            if (strtoupper(trim((string) $this->session->userdata('username'))) === 'ALIF' || in_array(
                 $this->session->userdata('departemen'),
                 ['KEUANGAN', 'MIA', 'HRD & GA'],
                 true
@@ -1745,6 +1745,13 @@ class C_Hrd extends CI_Controller
 
     public function get_paket_by_id($id)
     {
+        if (strtoupper(trim((string) $this->session->userdata('username'))) === 'ALIF') {
+            $this->output->set_status_header(403);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode(['status' => false]));
+            return;
+        }
+
         $data = $this->M_Hrd->get_paket_by_id($id, $this->session->userdata('username'));
         echo json_encode($data);
     }
@@ -1753,6 +1760,12 @@ class C_Hrd extends CI_Controller
     {
         $id = $this->input->post('id');
         $username = strtoupper(trim((string) $this->session->userdata('username')));
+        if ($username === 'ALIF') {
+            $this->output->set_status_header(403);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode(['status' => false]));
+            return;
+        }
 
         $data = [
             'tanggal'          => $this->input->post('tanggal'),
@@ -1770,6 +1783,13 @@ class C_Hrd extends CI_Controller
 
     public function hapus_penerimaan_paket()
     {
+        if (strtoupper(trim((string) $this->session->userdata('username'))) === 'ALIF') {
+            $this->output->set_status_header(403);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode(['status' => false]));
+            return;
+        }
+
         $id = $this->input->post('id');
 
         if (!$id) {
@@ -1787,6 +1807,13 @@ class C_Hrd extends CI_Controller
     public function tambah_penerimaan_paket()
     {
         $username = strtoupper(trim((string) $this->session->userdata('username')));
+        if ($username === 'ALIF') {
+            $this->output->set_status_header(403);
+            $this->output->set_content_type('application/json');
+            $this->output->set_output(json_encode(['status' => false]));
+            return;
+        }
+
         $data = [
             'tanggal'            => $this->input->post('tanggal'),
             'kd_penerima'        => in_array($username, ['HRD2', 'HRD4'], true)

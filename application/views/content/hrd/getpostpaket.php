@@ -1,4 +1,4 @@
-<?php if ($this->session->userdata('departemen') == 'KEUANGAN' || $this->session->userdata('departemen') == 'MIA' || $this->session->userdata('departemen') == 'HRD & GA') : ?>
+<?php if ($this->session->userdata('departemen') == 'KEUANGAN' || $this->session->userdata('departemen') == 'MIA' || $this->session->userdata('departemen') == 'HRD & GA' || strtoupper(trim((string) $this->session->userdata('username'))) === 'ALIF') : ?>
 
     <body class="hold-transition sidebar-mini sidebar-collapse">
 
