@@ -552,33 +552,39 @@ class M_Hrd extends CI_Model
 
     var $order_pos = ['tanggal' => 'desc'];
 
-    private function _get_datatables_query_pos($user)
+    private function apply_pos_paket_owner_scope($username)
+    {
+        $username = strtoupper(trim((string) $username));
+
+        if (in_array($username, ['HRD2', 'HRD4'], true)) {
+            return;
+        }
+
+        if ($username === '') {
+            $this->db->where('1 = 0', null, false);
+            return;
+        }
+
+        // ALIF KURNIAWAN is a legacy label for the ALIF account.
+        $owners = ($username === 'ALIF')
+            ? ['ALIF', 'ALIF KURNIAWAN']
+            : [$username];
+
+        $escapedOwners = array();
+        foreach ($owners as $owner) {
+            $escapedOwners[] = $this->db->escape($owner);
+        }
+        $this->db->where(
+            'UPPER(TRIM(kd_penerima)) IN (' . implode(',', $escapedOwners) . ')',
+            null,
+            false
+        );
+    }
+
+    private function _get_datatables_query_pos($username)
     {
         $this->db->from($this->table_pos);
-
-        switch ($user) {
-            case 'SUPRIYANTO':
-                $this->db->where_in('kd_penerima', ['TRI', 'IKA', 'SUPRIYANTO']);
-                break;
-            case 'IKA':
-                $this->db->where_in('kd_penerima', ['TRI', 'IKA', 'SUPRIYANTO']);
-                break;
-            case 'MIA':
-                $this->db->where('kd_penerima', 'MIA');
-                break;
-            case 'NITA':
-                $this->db->where('kd_penerima', 'NITA');
-                break;
-            case 'LADY':
-                $this->db->where('kd_penerima', 'LADY');
-                break;
-            case 'SHEILA':
-                $this->db->where('kd_penerima', 'SHEILA');
-                break;
-            default:
-                $this->db->where_in('kd_penerima', ['TRI', 'IKA', 'SUPRIYANTO', 'LADY', 'MIA', 'NITA', 'SHEILA']);
-                break;
-        }
+        $this->apply_pos_paket_owner_scope($username);
 
         if (!empty($_POST['search']['value'])) {
             $this->db->group_start();
@@ -628,23 +634,25 @@ class M_Hrd extends CI_Model
         return $this->db->insert('tb_terima_paket', $data);
     }
 
-    public function update_penerimaan_paket($id, $data)
+    public function update_penerimaan_paket($id, $data, $username)
     {
-        $this->db->where('id', $id);
+        $this->db->where('id', (int) $id);
+        $this->apply_pos_paket_owner_scope($username);
         return $this->db->update('tb_terima_paket', $data);
     }
 
-    public function get_paket_by_id($id)
+    public function get_paket_by_id($id, $username)
     {
-        return $this->db
-            ->where('id', $id)
-            ->get('tb_terima_paket')
-            ->row();
+        $this->db->from('tb_terima_paket');
+        $this->db->where('id', (int) $id);
+        $this->apply_pos_paket_owner_scope($username);
+        return $this->db->get()->row();
     }
 
-    public function hapus_penerimaan_paket($id)
+    public function hapus_penerimaan_paket($id, $username)
     {
-        $this->db->where('id', $id);
+        $this->db->where('id', (int) $id);
+        $this->apply_pos_paket_owner_scope($username);
         $this->db->delete('tb_terima_paket');
 
         return $this->db->affected_rows();

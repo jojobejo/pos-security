@@ -38,7 +38,7 @@
               <a href="<?php echo base_url('userAdmin') ?>" class="nav-link">
                 <i class="nav-icon fa fa-user"></i>
                 <p>
-                  User List
+                  User Management
                 </p>
               </a>
             </li>
@@ -61,6 +61,27 @@
             <!-- END AKSES LV 1 -->
 
             <!-- START AKSES LV 1 USER ADM LOGISTIK -->
+          <?php elseif (in_array(strtolower((string) $this->session->userdata('username')), ['alif', 'marisa'], true)) : ?>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_paket_pos') ?>" class="nav-link">
+                <i class="nav-icon fa fa-box"></i>
+                <p>Laporan Paket POS</p>
+              </a>
+            </li>
+            <?php if (strtolower((string) $this->session->userdata('username')) === 'marisa') : ?>
+              <li class="nav-item">
+                <a href="<?php echo base_url('hrd_lap_tamu') ?>" class="nav-link">
+                  <i class="nav-icon fa fa-id-badge"></i>
+                  <p>Laporan Tamu</p>
+                </a>
+              </li>
+            <?php endif; ?>
+            <li class="nav-item">
+              <a href="<?php echo base_url('logout') ?>" class="nav-link">
+                <i class="nav-icon fas fa-sign-out-alt"></i>
+                <p>Log Out</p>
+              </a>
+            </li>
           <?php elseif ($this->session->userdata('akses_lv') == '1' && $this->session->userdata('departemen') == 'LOGISTIK') : ?>
             <li class="nav-item">
               <a href="<?php echo base_url('truckoprational') ?>" class="nav-link">

@@ -37,7 +37,10 @@ class Auth extends CI_Controller
                         'status'      => "is_login"
                     );
 
-                    if ($key->username === 'yunika' && $key->departemen === 'LOGISTIK') {
+                    if (strtolower($key->username) === 'alif') {
+                        $this->session->set_userdata($data_session);
+                        redirect('hrd_lap_paket_pos');
+                    } elseif ($key->username === 'yunika' && $key->departemen === 'LOGISTIK') {
                         $this->session->set_userdata($data_session);
                         redirect('hrd_lap_expedisi');
                     } elseif ($key->departemen == 'KEUANGAN') {

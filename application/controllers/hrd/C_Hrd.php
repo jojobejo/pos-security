@@ -1635,7 +1635,7 @@ class C_Hrd extends CI_Controller
     public function lap_penerimaan_pos_serverside()
     {
         $list = $this->M_Hrd->get_datatables_get_pos_paket(
-            $this->session->userdata('nama_user')
+            $this->session->userdata('username')
         );
 
         $data = [];
@@ -1651,6 +1651,7 @@ class C_Hrd extends CI_Controller
             // ===== MAPPING PENERIMA =====
             switch ($l->kd_penerima) {
                 case 'IKA':
+                case 'SUKMA':
                 case 'SUPRIYANTO':
                     $penerima_raw = 'KEUANGAN';
                     break;
@@ -1658,7 +1659,12 @@ class C_Hrd extends CI_Controller
                     $penerima_raw = 'PURCHASING';
                     break;
                 case 'NITA':
+                case 'MARISA':
                     $penerima_raw = 'HRD & GA';
+                    break;
+                case 'ALIF':
+                case 'ALIF KURNIAWAN':
+                    $penerima_raw = 'LOGISTIK';
                     break;
                 // case 'MIA':
                 //     $penerima_raw = 'MIA';
@@ -1693,7 +1699,11 @@ class C_Hrd extends CI_Controller
             $row[] = $status_label;
 
 
-            if ($this->session->userdata('departemen') == 'KEUANGAN') {
+            if (in_array(
+                $this->session->userdata('departemen'),
+                ['KEUANGAN', 'MIA', 'HRD & GA'],
+                true
+            )) {
                 $row[] = '
            <button class="btn btn-success btn-sm btn-konfirmasi"
                 data-toggle="modal"
@@ -1703,7 +1713,7 @@ class C_Hrd extends CI_Controller
             </button>
             ';
             } else {
-                $row[] = $l->inputer;
+                $row[] = html_escape($l->inputer);
                 $row[] = '
             <div class="row">
                                 <div class="col-6">
@@ -1722,7 +1732,7 @@ class C_Hrd extends CI_Controller
             $data[] = $row;
         }
 
-        $user = $this->session->userdata('nama_user');
+        $user = $this->session->userdata('username');
 
         echo json_encode([
             "draw"            => intval($_POST['draw']),
@@ -1735,24 +1745,27 @@ class C_Hrd extends CI_Controller
 
     public function get_paket_by_id($id)
     {
-        $data = $this->M_Hrd->get_paket_by_id($id);
+        $data = $this->M_Hrd->get_paket_by_id($id, $this->session->userdata('username'));
         echo json_encode($data);
     }
 
     public function edit_penerimaan_paket()
     {
         $id = $this->input->post('id');
+        $username = strtoupper(trim((string) $this->session->userdata('username')));
 
         $data = [
             'tanggal'          => $this->input->post('tanggal'),
-            'kd_penerima'      => $this->input->post('kd_penerima'),
+            'kd_penerima'      => in_array($username, ['HRD2', 'HRD4'], true)
+                ? $this->input->post('kd_penerima')
+                : $username,
             'keterangan_1'     => $this->input->post('keterangan_1'),
             'tanggal_terima_1' => $this->input->post('tanggal_terima_1'),
             'jam_terima_1'     => $this->input->post('jam_terima_1'),
         ];
 
-        $this->M_Hrd->update_penerimaan_paket($id, $data);
-        echo json_encode(['status' => true]);
+        $updated = $this->M_Hrd->update_penerimaan_paket($id, $data, $username);
+        echo json_encode(['status' => (bool) $updated]);
     }
 
     public function hapus_penerimaan_paket()
@@ -1764,7 +1777,7 @@ class C_Hrd extends CI_Controller
             return;
         }
 
-        $delete = $this->M_Hrd->hapus_penerimaan_paket($id);
+        $delete = $this->M_Hrd->hapus_penerimaan_paket($id, $this->session->userdata('username'));
 
         echo json_encode([
             'status' => $delete ? true : false
@@ -1773,16 +1786,21 @@ class C_Hrd extends CI_Controller
 
     public function tambah_penerimaan_paket()
     {
+        $username = strtoupper(trim((string) $this->session->userdata('username')));
         $data = [
             'tanggal'            => $this->input->post('tanggal'),
-            'kd_penerima'        => $this->input->post('kd_penerima'),
+            'kd_penerima'        => in_array($username, ['HRD2', 'HRD4'], true)
+                ? $this->input->post('kd_penerima')
+                : $username,
             'keterangan_1'       => $this->input->post('keterangan_1'),
             'tanggal_terima_1'   => $this->input->post('tanggal_terima_1'),
             'tanggal_terima_2'   => $this->input->post('tanggal_terima_2'),
             'jam_terima_1'       => $this->input->post('jam_terima_1'),
             'jam_terima_2'       => $this->input->post('jam_terima_2'),
             'status'             => 'BELUM DITERIMA',
-            'inputer'            => $this->input->post('inputer'),
+            'inputer'            => ($username === 'HRD4')
+                ? trim((string) $this->input->post('inputer', true))
+                : $this->session->userdata('nama_user'),
         ];
 
         if (
@@ -1817,7 +1835,7 @@ class C_Hrd extends CI_Controller
             'status'           => '1'
         ];
 
-        $this->M_Hrd->update_penerimaan_paket($id, $data);
+        $this->M_Hrd->update_penerimaan_paket($id, $data, $this->session->userdata('username'));
         redirect('hrd_lap_paket_pos');
     }
 

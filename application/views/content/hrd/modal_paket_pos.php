@@ -20,8 +20,9 @@
                                 <option value="">-- Pilih --</option>
                                 <option value="SUPRIYANTO">SUPRI</option>
                                 <option value="LADY">LADY</option>
-                                <option value="IKA">IKA</option>
-                                <option value="NITA">NITA</option>
+                                <option value="SUKMA">SUKMA</option>
+                                <option value="MARISA">MARISA</option>
+                                <option value="ALIF KURNIAWAN">ALIF / KURNIAWAN / LOGISTIK</option>
                                 <option value="MIA">MIA</option>
                                 <option value="SHEILA">SHEILA</option>
                             </select>
@@ -158,9 +159,13 @@
                         <div class="col-md-6">
                             <label>Penerima</label>
                             <select name="kd_penerima" id="edit_kd_penerima" class="form-control" required>
-                                <option value="KEUANGAN">KEUANGAN</option>
-                                <option value="PURCHASING">PURCHASING</option>
-                                <option value="KEUANGAN1">KEUANGAN1</option>
+                                <option value="SUPRIYANTO">SUPRI</option>
+                                <option value="LADY">LADY</option>
+                                <option value="SUKMA">SUKMA</option>
+                                <option value="MARISA">MARISA</option>
+                                <option value="ALIF KURNIAWAN">ALIF / KURNIAWAN / LOGISTIK</option>
+                                <option value="MIA">MIA</option>
+                                <option value="SHEILA">SHEILA</option>
                             </select>
                         </div>
                     </div>

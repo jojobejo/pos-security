@@ -204,7 +204,7 @@ $route['detail_kpi/(:any)/(:any)']              = 'kpi/C_Kpi/detail_kpi/$1/$2';
 
 //UserAccount
 $route['userAdmin']                             = 'user/Admin';
-$route['addUser']                               = 'user/Admin/addUser';
+$route['updateUser/(:num)']                     = 'user/Admin/update/$1';
 
 //IndeksNilaiKepuasanPelanggan
 $route['kepuasan_pelanggan']                    = 'pelanggan/C_Pelanggan';

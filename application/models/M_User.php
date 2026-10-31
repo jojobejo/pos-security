@@ -6,7 +6,24 @@ class M_User extends CI_Model
 {
     public function getAll()
     {
-        return $this->db->get('tb_user')->result();
+        return $this->db->select('id, nama_user, username, departemen, akses_lv')
+            ->order_by('nama_user', 'ASC')->get('tb_user')->result();
+    }
+
+    public function username_exists($username, $exceptId)
+    {
+        return $this->db->where('username', $username)->where('id !=', (int) $exceptId)
+            ->count_all_results('tb_user') > 0;
+    }
+
+    public function update_profile($id, $data)
+    {
+        $this->db->where('id', (int) $id)->update('tb_user', $data);
+        $error = $this->db->error();
+        if (!empty($error['code'])) {
+            return false;
+        }
+        return $this->db->where('id', (int) $id)->count_all_results('tb_user') === 1;
     }
 
     public function addUser($data)
