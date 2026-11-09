@@ -59,6 +59,11 @@ $route['translate_uri_dashes'] = FALSE;
 $route['process']   = 'Auth/process';
 $route['logout']    = 'Auth/logout';
 
+// Arsip Dokumen Digital
+$route['digdocs'] = 'digdocs/C_Digdocs';
+$route['digdocs/(add|save|import|notifications)'] = 'digdocs/C_Digdocs/$1';
+$route['digdocs/(detail|edit|save|renew|delete|preview|download|acknowledge)/(:num)'] = 'digdocs/C_Digdocs/$1/$2';
+
 //Dashboard
 $route['dashboard'] = 'Dashboard';
 $route['konfirm_tamu'] = 'Dashboard/konfirm_tamu';

@@ -30,20 +30,29 @@ class Auth extends CI_Controller
                         'id'          => $key->id,
                         'username'    => $key->username,
                         'kduser'      => $key->kode_user,
-                        'subdepartemen' => $key->sub_departemen,
+                        'subdepartemen' => $key->sub_departemen ?? null,
                         'nama_user'   => $key->nama_user,
                         'akses_lv'    => $key->akses_lv,
                         'departemen'  => $key->departemen,
                         'status'      => "is_login"
                     );
 
-                    if (strtolower($key->username) === 'alif') {
+                    if (in_array($key->username, ['HRD2', 'GA1'], true)) {
+                        $this->session->sess_regenerate(true);
+                        $this->session->unset_userdata('digdocs_csrf');
+                    }
+
+                    if ($key->username === 'GA1' && $key->departemen === 'HRD&GA') {
+                        $this->session->set_userdata($data_session);
+                        redirect('digdocs');
+                    } elseif (strtolower($key->username) === 'alif') {
                         $this->session->set_userdata($data_session);
                         redirect('hrd_lap_paket_pos');
                     } elseif ($key->username === 'yunika' && $key->departemen === 'LOGISTIK') {
                         $this->session->set_userdata($data_session);
                         redirect('hrd_lap_expedisi');
-                    } elseif ($key->departemen == 'KEUANGAN') {
+                    } elseif ($key->departemen == 'KEUANGAN'
+                        || ($key->username === 'HRD2' && $key->departemen === 'HRD&GA')) {
                         $this->session->set_userdata($data_session);
                         redirect('hrd_lap_paket_pos');
                     } elseif ($key->departemen == 'MIA') {

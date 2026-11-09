@@ -1625,11 +1625,21 @@ class C_Hrd extends CI_Controller
     public function hrd_lap_penerimaan_pos()
     {
         $data['page_title'] = 'Penerimaan POS Paket';
+        $data['confirm_only'] = $this->paket_pos_confirmation_only();
 
         $this->load->view('partial/main/header.php', $data);
         $this->load->view('content/hrd/getpostpaket.php', $data);
         $this->load->view('partial/main/footer.php');
         $this->load->view('content/hrd/ajaxhrd_pospaket.php');
+    }
+
+    private function paket_pos_confirmation_only()
+    {
+        $username = $this->session->userdata('username');
+        $department = $this->session->userdata('departemen');
+        return strtoupper(trim((string) $username)) === 'ALIF'
+            || ($username === 'HRD2' && $department === 'HRD&GA')
+            || in_array($department, ['KEUANGAN', 'MIA', 'HRD & GA'], true);
     }
 
     public function lap_penerimaan_pos_serverside()
@@ -1639,6 +1649,7 @@ class C_Hrd extends CI_Controller
         );
 
         $data = [];
+        $confirmOnly = $this->paket_pos_confirmation_only();
 
         foreach ($list as $l) {
             $row = [];
@@ -1699,11 +1710,7 @@ class C_Hrd extends CI_Controller
             $row[] = $status_label;
 
 
-            if (strtoupper(trim((string) $this->session->userdata('username'))) === 'ALIF' || in_array(
-                $this->session->userdata('departemen'),
-                ['KEUANGAN', 'MIA', 'HRD & GA'],
-                true
-            )) {
+            if ($confirmOnly) {
                 $row[] = '
            <button class="btn btn-success btn-sm btn-konfirmasi"
                 data-toggle="modal"

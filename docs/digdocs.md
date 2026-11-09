@@ -1,0 +1,38 @@
+# Arsip Dokumen Digital
+
+Buka **Arsip Dokumen Digital** dari menu `HRD2` atau langsung di `/digdocs`. `GA1` diarahkan ke arsip setelah login.
+
+## Migrasi dan akun
+
+1. Cadangkan database aplikasi. Jalankan [digdocs_setup.sql](../database/sql/digdocs_setup.sql) pada database yang dipilih di `application/config/database.php`. Migrasi menambah `docsdig_documents`, `docsdig_access`, `docsdig_audit`, dan `docsdig_reminder_reads` pada MariaDB/MySQL dengan InnoDB.
+2. Periksa hasil SELECT terakhir. Harus ada dua baris, `HRD2` dan `GA1`, dengan departemen `HRD&GA`. Migrasi mempertahankan kata sandi `HRD2` dan membuat `GA1` pada level 2 dengan kolom kata sandi kosong sehingga login ditolak sampai akun diaktifkan.
+3. Masuk sebagai admin IT, buka **User Management**, lalu setel kata sandi unik untuk `GA1`. Gunakan saluran internal yang aman untuk penyerahannya. Pengguna `HRD2` yang sedang login perlu masuk kembali untuk menyegarkan departemen di sesi.
+4. Verifikasi kedua akun dapat membuka arsip. Akun lain, termasuk anggota `HRD&GA` dan admin IT, akan menerima HTTP 403 di endpoint arsip.
+
+Migrasi dapat dijalankan ulang. Hak akses terikat ke ID akun dan nama pengguna persis seperti yang dicatat. Jika `HRD2` ambigu atau `GA1` sudah ada tanpa grant, skrip tidak mengikat akun yang meragukan. Verifikasi identitas akun di `tb_user` sebelum mengoreksi departemen atau menetapkan ID tersebut secara eksplisit di `docsdig_access`. Admin database dan admin yang berwenang mereset kredensial akun merupakan bagian dari batas kepercayaan. Menghapus baris grant mencabut akses pada permintaan berikutnya, termasuk untuk sesi yang sudah aktif.
+
+## Penyimpanan dan penyajian lampiran
+
+- Atur `DIGDOCS_STORAGE_DIR` pada lingkungan proses PHP jika lokasi bawaan tidak sesuai. Pada instalasi XAMPP di workspace ini, lokasi bawaan adalah `/Applications/XAMPP/xamppfiles/var/pos-security-digdocs`. Di instalasi lain, bawaan adalah `var/pos-security-digdocs` dua tingkat di atas folder aplikasi publik.
+- Buat direktori khusus dengan mode `0700` dan beri proses PHP izin untuk membaca, menelusuri, menambah, dan menghapus file. Direktori harus berada di luar document root dan proyek, termasuk setelah symlink diurai. Jangan petakan direktori ini dengan alias, symlink publik, atau handler web. Di XAMPP lokal, direktori sudah dibuat dan diberi ACL untuk proses Apache `daemon`. Di macOS, uji unggah dan hapus lewat Apache karena `is_writable()` bisa bernilai `false` meski ACL mengizinkan operasi file tersebut. Lampiran disimpan dengan nama acak tanpa ekstensi dan mode `0600`.
+- PHP memerlukan `fileinfo` dan `mbstring`, serta `zip` dan `dom` untuk format Office. Batas modul adalah 10 MB per file dan 10 file per impor. Setel `upload_max_filesize` minimal `10M` dan `max_file_uploads` di atas 10 agar modul bisa menolak kiriman yang melebihi batas jumlah. Untuk mendukung 10 file yang masing-masing 10 MB dalam satu permintaan, setel `post_max_size` dan batas badan permintaan web server setidaknya `110M`. Instalasi XAMPP lokal menggunakan `post_max_size=40M`, sehingga impor besar perlu dipecah.
+- Tombol **Pratinjau** membuka modal dari halaman detail. PDF dirender per halaman ke kanvas oleh PDF.js 6.5.438. JPEG, PNG, dan WebP ditampilkan sebagai gambar. Pratinjau memerlukan browser yang mendukung dialog dan ES modules. PDF juga memerlukan Web Workers dan WebAssembly. Sajikan `.mjs` sebagai JavaScript dan `.wasm` sebagai WebAssembly. Apache mendapat aturan MIME dari `assets/digdocs/.htaccess`. [Rilis PDF.js yang disertakan](https://github.com/mozilla/pdf.js/releases/tag/v6.5.438)
+- Pratinjau XLSX menampilkan nilai sel yang tersimpan, sampai 12 lembar dengan masing-masing 100 baris dan 24 kolom. PPTX menampilkan teks dan gambar raster yang tertanam pada sampai 30 slide. DOCX menampilkan teks dokumen. TXT dan CSV tampil sebagai teks biasa. Penampil mengabaikan skrip, makro, tautan eksternal, formulir, dan rumus aktif. Batas pemrosesan juga berlaku pada ukuran bagian Office dan hasil pratinjau. Gunakan **Unduh lampiran** untuk membuka file asli dengan tata letak dan isi lengkap. Format Office biner lama seperti `.xls`, `.ppt`, dan `.doc` berada di luar daftar unggahan. Validasi format dan ukuran tidak memindai malware.
+- Gunakan HTTPS dan mode produksi saat menyajikan arsip. Data modul tidak dikirim ke CDN atau penampil eksternal. Modul memakai autentikasi aplikasi pada origin yang sama, sehingga konfigurasi web, kode lain pada origin, dan admin server harus tepercaya. Database, cadangan, dan log akses server berada dalam batas kerahasiaan yang sama. Kata kunci pencarian dapat muncul di log akses bila server mencatat query string.
+
+Impor mengisi satu dokumen per file, memakai nama file sebagai judul dan satu kategori untuk satu batch. Dokumen hasil impor mulai tanpa tanggal kedaluwarsa. Jika satu file gagal divalidasi, batch tidak dicatat. Penggantian atau penghapusan mengubah referensi database terlebih dahulu, lalu membersihkan file lama. Jika sistem file gagal menghapusnya, file tetap privat dan nama penyimpanan dicatat di log server. Bersihkan file yang tidak lagi dirujuk saat penulisan arsip dihentikan. Cadangkan dan pulihkan database serta direktori privat sebagai satu set. Audit menyimpan ID dokumen, ID akun, tindakan, waktu, dan perubahan tanggal kedaluwarsa jika ada. Audit tetap tersedia setelah dokumen dihapus.
+
+## Pengingat dan perpanjangan
+
+- Isi tanggal kedaluwarsa saat menambah atau mengedit dokumen. Pengingat aktif otomatis mulai 30 hari sebelum tanggal tersebut dengan frekuensi harian. Untuk menyesuaikan, pilih 0–3650 hari dan frekuensi harian, mingguan, atau bulanan. Kosongkan tanggal kedaluwarsa untuk arsip permanen.
+- Buka **Pengingat** untuk melihat jadwal yang sudah tiba dan belum dibaca. Status dan jadwal dihitung saat halaman dibuka, dalam zona waktu `Asia/Jakarta`. Penandaan dibaca berlaku untuk satu akun dan satu jadwal. Jadwal berikutnya muncul sesuai frekuensi. Setelah tanggal berakhir lewat, modul menampilkan satu pengingat kedaluwarsa yang bisa ditandai dibaca.
+- Pengingat hanya ditampilkan dalam aplikasi. Mekanisme ini tidak memerlukan cron atau pengaturan email.
+- Pilih periode harian, mingguan, bulanan, atau tahunan jika dokumen berulang. Di detail dokumen, periksa tanggal yang disarankan lalu gunakan **Catat perpanjangan**. Tanggal baru harus sesudah tanggal lama. Jika hari yang sama tidak tersedia pada bulan tujuan, saran memakai hari terakhir bulan tersebut. Pengguna bisa menyesuaikan saran dengan perpanjangan yang disepakati. Konfirmasi menyimpan tanggal lama, tanggal baru, dan akun yang mengonfirmasi.
+
+Dokumen berstatus **Aktif** sebelum jendela pengingat, **Segera Kedaluwarsa** mulai dari awal jendela sampai tanggal berakhir, **Kedaluwarsa** mulai hari berikutnya, dan **Tanpa Kedaluwarsa** bila tidak ada tanggal berakhir.
+
+## Verifikasi
+
+Uji HTTP dijalankan pada database terisolasi dengan skema aplikasi. Cakupannya meliputi login kedua akun, penolakan URL langsung dan AJAX untuk akun lain, CSRF, validasi unggahan, tambah dan impor, penggantian lampiran, unduhan, penghapusan, pencarian, filter, pengingat per akun, konfirmasi perpanjangan, dan audit. Uji kalender mencakup batas akhir bulan dan tahun kabisat. Chrome pada ukuran layar ponsel merender PDF dua halaman tanpa menghubungi origin lain.
+
+Di XAMPP lokal, migrasi telah dijalankan dan endpoint arsip merespons HTTP 403 tanpa login. Kata sandi `HRD2` yang sudah ada dipertahankan. `GA1` menunggu aktivasi melalui User Management.

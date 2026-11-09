@@ -1,0 +1,196 @@
+body {
+    background: #f4f6f9;
+    color: #192a3a;
+}
+
+.archive-header {
+    background: #142c45;
+    color: #fff;
+}
+
+.archive-brand {
+    color: inherit;
+    font-weight: 700;
+}
+
+.archive-brand:hover {
+    color: #c9e2ff;
+}
+
+.archive-brand span {
+    color: #a9bed7;
+    margin: 0 .3rem;
+}
+
+.archive-eyebrow {
+    color: #4d6177;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    margin-bottom: .25rem;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+}
+
+.archive-back {
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.archive-actions {
+    gap: .5rem;
+}
+
+.archive-card {
+    border: 1px solid #dce3eb;
+    border-radius: .6rem;
+    box-shadow: 0 2px 6px rgba(20, 44, 69, .05);
+    overflow: hidden;
+}
+
+.archive-card .table thead th {
+    background: #edf2f8;
+    border-top: 0;
+    font-size: .9rem;
+}
+
+.archive-status {
+    border-radius: 1rem;
+    display: inline-block;
+    font-size: .8rem;
+    font-weight: 700;
+    padding: .2rem .6rem;
+    white-space: nowrap;
+}
+
+.archive-status-active { background: #d9f0e4; color: #195c36; }
+.archive-status-due { background: #fff0c5; color: #785000; }
+.archive-status-expired { background: #f8dfe1; color: #85252e; }
+.archive-status-none { background: #e9eef4; color: #384d64; }
+
+.archive-settings {
+    background: #f2f5f9;
+    border-radius: .5rem;
+    padding: .75rem 1rem 0;
+}
+
+.archive-settings legend {
+    float: left;
+}
+
+.archive-wrap,
+.archive-description {
+    overflow-wrap: anywhere;
+}
+
+.archive-description {
+    white-space: pre-wrap;
+}
+
+.archive-preview-open {
+    overflow: hidden;
+}
+
+.archive-dialog {
+    background: #fff;
+    border: 1px solid #dce3eb;
+    border-radius: .75rem;
+    box-shadow: 0 1rem 3rem rgba(20, 44, 69, .28);
+    color: #192a3a;
+    max-width: 64rem;
+    max-height: calc(100% - 2rem);
+    padding: 0;
+    width: calc(100% - 2rem);
+}
+
+.archive-dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.archive-dialog::backdrop {
+    background: rgba(13, 28, 45, .68);
+}
+
+.archive-dialog-header {
+    border-bottom: 1px solid #dce3eb;
+    padding: .75rem 1rem;
+}
+
+.archive-preview {
+    background: #eef2f7;
+    min-height: 6rem;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 1rem;
+    text-align: center;
+}
+
+.archive-preview canvas,
+.archive-preview img {
+    height: auto;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.archive-preview [hidden],
+#archive-preview[hidden] {
+    display: none !important;
+}
+
+.archive-preview-select {
+    display: block;
+    max-width: 20rem;
+    text-align: left;
+}
+
+.archive-sheet-scroll {
+    max-height: 65vh;
+    overflow: auto;
+}
+
+.archive-sheet {
+    background: white;
+    text-align: left;
+    width: max-content;
+    min-width: 100%;
+}
+
+.archive-sheet th {
+    background: #e0e9f3;
+}
+
+.archive-sheet td {
+    max-width: 18rem;
+    min-width: 5rem;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.archive-slide,
+.archive-text {
+    background: white;
+    border-radius: .4rem;
+    margin: 0 auto;
+    max-width: 54rem;
+    padding: 1rem;
+    text-align: left;
+}
+
+.archive-text {
+    color: inherit;
+    font: inherit;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.archive-slide .archive-text {
+    padding: 0;
+}
+
+.archive-preview .archive-slide-image {
+    display: block;
+    margin: 1rem auto 0;
+    max-height: 52vh;
+    object-fit: contain;
+}

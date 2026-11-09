@@ -16,6 +16,21 @@
           <!-- Add icons to the links using the .nav-icon class
           with font-awesome or any other icon font library -->
 
+          <?php if (in_array($this->session->userdata('username'), ['HRD2', 'GA1'], true)) : ?>
+            <?php
+            $digdocsApp =& get_instance();
+            $digdocsApp->load->model('M_Digdocs');
+            ?>
+            <?php if ($digdocsApp->M_Digdocs->can_access()) : ?>
+              <li class="nav-item">
+                <a href="<?= html_escape(site_url('digdocs')) ?>" class="nav-link">
+                  <i class="nav-icon fas fa-archive"></i>
+                  <p>Arsip Dokumen Digital</p>
+                </a>
+              </li>
+            <?php endif; ?>
+          <?php endif; ?>
+
           <!-- START AKSES LV 1 -->
           <?php if ($this->session->userdata('akses_lv') == '1' && $this->session->userdata('departemen') == 'IT') : ?>
             <li class="nav-item">
