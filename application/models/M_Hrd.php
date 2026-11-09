@@ -10,73 +10,73 @@ class M_Hrd extends CI_Model
     public function get_all_laporan()
     {
         return $this->db->query("SELECT a.*
-        FROM tb_lap_distribusi a
+        FROM hrdga_lap_distribusi a
         ");
     }
     public function getalltamulb()
     {
         return $this->db->query("SELECT a.*
-        FROM tb_tamu_lby a
+        FROM hrdga_tamu_lby a
         ");
     }
     public function get_lap_id($id)
     {
         return $this->db->query("SELECT a.*
-        FROM tb_lap_distribusi a
+        FROM hrdga_lap_distribusi a
         WHERE id = $id
         ");
     }
     public function addlapdistribusihrd($data)
     {
-        return $this->db->insert('tb_lap_distribusi', $data);
+        return $this->db->insert('hrdga_lap_distribusi', $data);
     }
     public function editlapdistribusihrd($id, $data)
     {
         $this->db->where('id', $id);
-        return $this->db->update('tb_lap_distribusi', $data);
+        return $this->db->update('hrdga_lap_distribusi', $data);
     }
     public function hapus_lap_distribusi_hrd($id)
     {
-        return $this->db->delete('tb_lap_distribusi', array("id" => $id));
+        return $this->db->delete('hrdga_lap_distribusi', array("id" => $id));
     }
 
     public function konfirmtamulb($data)
     {
-        return $this->db->insert('tb_tamu', $data);
+        return $this->db->insert('hrdga_tamu', $data);
     }
 
     public function get_all_tamu_lb()
     {
         return $this->db->query("SELECT a.*
-        FROM tb_tamu_lby a
+        FROM hrdga_tamu_lby a
         ");
     }
 
     public function hapus_lap_tamu_lby($id)
     {
-        return $this->db->delete('tb_tamu_lby', array("id" => $id));
+        return $this->db->delete('hrdga_tamu_lby', array("id" => $id));
     }
     public function addlaptamuhrd($data)
     {
-        return $this->db->insert('tb_tamu_lby', $data);
+        return $this->db->insert('hrdga_tamu_lby', $data);
     }
     public function editlaptamu($id, $data)
     {
         $this->db->where('id', $id);
-        return $this->db->update('tb_tamu', $data);
+        return $this->db->update('hrdga_tamu', $data);
     }
     public function hapus_lap_tamu_lb($id)
     {
-        return $this->db->delete('tb_tamu_lby', array("id" => $id));
+        return $this->db->delete('hrdga_tamu_lby', array("id" => $id));
     }
     public function hapus_lap_tamu_hrd($id)
     {
-        return $this->db->delete('tb_tamu', array("id" => $id));
+        return $this->db->delete('hrdga_tamu', array("id" => $id));
     }
     public function get_all_tamu()
     {
         return $this->db->query("SELECT a.*
-        FROM tb_tamu a
+        FROM hrdga_tamu a
         ");
     }
     //karyawan keluar masuk 
@@ -84,21 +84,21 @@ class M_Hrd extends CI_Model
     public function get_all_laporan_karykm()
     {
         return $this->db->query("SELECT a.*
-        FROM tb_karyawan_keluarmasuk a
+        FROM hrdga_karyawan_keluarmasuk a
         ");
     }
     public function addlapkarykm($data)
     {
-        return $this->db->insert('tb_karyawan_keluarmasuk', $data);
+        return $this->db->insert('hrdga_karyawan_keluarmasuk', $data);
     }
     public function editlapkarykm($id, $data)
     {
         $this->db->where('id', $id);
-        return $this->db->update('tb_karyawan_keluarmasuk', $data);
+        return $this->db->update('hrdga_karyawan_keluarmasuk', $data);
     }
     public function hapuslapkarykm($id)
     {
-        return $this->db->delete('tb_karyawan_keluarmasuk', array("id" => $id));
+        return $this->db->delete('hrdga_karyawan_keluarmasuk', array("id" => $id));
     }
 
     //laporan Expedisi
@@ -106,9 +106,9 @@ class M_Hrd extends CI_Model
     public function get_all_laporan_expedisi()
     {
         return $this->db->select('a.*, penerima.nama_user AS nama_penerima, penerima.username AS username_penerima, penerima_konfirmasi.nama_user AS nama_penerima_konfirmasi')
-            ->from('tb_expedisi a')
-            ->join('tb_user penerima', 'penerima.id = a.penerima_berkas_id', 'left')
-            ->join('tb_user penerima_konfirmasi', 'penerima_konfirmasi.id = a.diterima_oleh_id', 'left')
+            ->from('hrdga_expedisi a')
+            ->join('hrdga_user penerima', 'penerima.id = a.penerima_berkas_id', 'left')
+            ->join('hrdga_user penerima_konfirmasi', 'penerima_konfirmasi.id = a.diterima_oleh_id', 'left')
             ->order_by('a.tanggal', 'DESC')
             ->get();
     }
@@ -116,7 +116,7 @@ class M_Hrd extends CI_Model
     public function get_penerima_berkas_logistik()
     {
         return $this->db->select('id, nama_user, username')
-            ->from('tb_user')
+            ->from('hrdga_user')
             ->where('departemen', 'LOGISTIK')
             ->order_by('nama_user', 'ASC')
             ->get()
@@ -126,9 +126,9 @@ class M_Hrd extends CI_Model
     public function get_expedisi_by_id($id)
     {
         return $this->db->select('a.*, penerima.nama_user AS nama_penerima, penerima.username AS username_penerima, penerima_konfirmasi.nama_user AS nama_penerima_konfirmasi')
-            ->from('tb_expedisi a')
-            ->join('tb_user penerima', 'penerima.id = a.penerima_berkas_id', 'left')
-            ->join('tb_user penerima_konfirmasi', 'penerima_konfirmasi.id = a.diterima_oleh_id', 'left')
+            ->from('hrdga_expedisi a')
+            ->join('hrdga_user penerima', 'penerima.id = a.penerima_berkas_id', 'left')
+            ->join('hrdga_user penerima_konfirmasi', 'penerima_konfirmasi.id = a.diterima_oleh_id', 'left')
             ->where('a.id', $id)
             ->get()
             ->row();
@@ -137,8 +137,8 @@ class M_Hrd extends CI_Model
     public function get_riwayat_penerimaan_expedisi($expedisiId)
     {
         return $this->db->select('r.*, u.nama_user AS nama_penerima')
-            ->from('tb_expedisi_penerimaan_riwayat r')
-            ->join('tb_user u', 'u.id = r.penerima_id', 'left')
+            ->from('hrdga_expedisi_penerimaan_riwayat r')
+            ->join('hrdga_user u', 'u.id = r.penerima_id', 'left')
             ->where('r.expedisi_id', $expedisiId)
             ->order_by('r.diterima_pada', 'DESC')
             ->get()
@@ -152,7 +152,7 @@ class M_Hrd extends CI_Model
         $this->db->where('id', $expedisiId);
         $this->db->where('penerima_berkas_id', $penerimaId);
         $this->db->where('status_berkas', 'BELUM_DITERIMA');
-        $this->db->update('tb_expedisi', [
+        $this->db->update('hrdga_expedisi', [
             'status_berkas' => 'SUDAH_DITERIMA',
             'diterima_oleh_id' => $penerimaId,
             'diterima_pada' => date('Y-m-d H:i:s'),
@@ -161,7 +161,7 @@ class M_Hrd extends CI_Model
 
         $updated = $this->db->affected_rows();
         if ($updated === 1) {
-            $this->db->insert('tb_expedisi_penerimaan_riwayat', [
+            $this->db->insert('hrdga_expedisi_penerimaan_riwayat', [
                 'expedisi_id' => $expedisiId,
                 'penerima_id' => $penerimaId,
                 'status_berkas' => 'SUDAH_DITERIMA',
@@ -177,16 +177,16 @@ class M_Hrd extends CI_Model
 
     public function addlapexpedisi($data)
     {
-        return $this->db->insert('tb_expedisi', $data);
+        return $this->db->insert('hrdga_expedisi', $data);
     }
     public function editlapexpedisi($id, $data)
     {
         $this->db->where('id', $id);
-        return $this->db->update('tb_expedisi', $data);
+        return $this->db->update('hrdga_expedisi', $data);
     }
     public function hapuslapexpedisi($id)
     {
-        return $this->db->delete('tb_expedisi', array("id" => $id));
+        return $this->db->delete('hrdga_expedisi', array("id" => $id));
     }
 
     //issue
@@ -194,67 +194,67 @@ class M_Hrd extends CI_Model
     public function get_all_laporan_issue()
     {
         return $this->db->query("SELECT a.*
-        FROM tb_issue a
+        FROM hrdga_issue a
         ");
     }
     public function export_lap_issue()
     {
-        return $this->db->get('tb_issue')->result();
+        return $this->db->get('hrdga_issue')->result();
     }
     public function export_lap_km_karyawan()
     {
-        return $this->db->get('tb_karyawan_keluarmasuk')->result();
+        return $this->db->get('hrdga_karyawan_keluarmasuk')->result();
     }
     public function addlapissue($data)
     {
-        return $this->db->insert('tb_issue', $data);
+        return $this->db->insert('hrdga_issue', $data);
     }
     public function editlapissue($id, $data)
     {
         $this->db->where('id', $id);
-        return $this->db->update('tb_issue', $data);
+        return $this->db->update('hrdga_issue', $data);
     }
     public function hapuslapissue($id)
     {
-        return $this->db->delete('tb_issue', array("id" => $id));
+        return $this->db->delete('hrdga_issue', array("id" => $id));
     }
     public function cari_lap_distribusi($v1, $v2)
     {
         return $this->db->query("SELECT a.*
-        FROM tb_lap_distribusi a
+        FROM hrdga_lap_distribusi a
         WHERE $v1 LIKE '$v2'
         ");
     }
     public function get_all_truk_service_histori()
     {
         return $this->db->query("SELECT a.*
-        FROM tb_service_truk a
+        FROM hrdga_service_truk a
         ");
     }
     public function update_km_service($id, $data)
     {
         $this->db->where('id', $id);
-        return $this->db->update('tb_service_truk', $data);
+        return $this->db->update('hrdga_service_truk', $data);
     }
     public function get_all_karyawan()
     {
         return $this->db->query("SELECT a.*
-        FROM tb_user a WHERE id > '4'
+        FROM hrdga_user a WHERE id > '4'
         ");
     }
     public function update_karyawan($id, $data)
     {
         $this->db->where('id', $id);
-        return $this->db->update('tb_user', $data);
+        return $this->db->update('hrdga_user', $data);
     }
     public function add_karyawan($data)
     {
-        return $this->db->insert('tb_user', $data);
+        return $this->db->insert('hrdga_user', $data);
     }
 
 
 
-    var $table = 'tb_lap_distribusi';
+    var $table = 'hrdga_lap_distribusi';
     var $column_order = array('tglkeluar', 'tglmasuk', 'nopol', 'nolambung', 'namadriver', 'namahelper', 'tujuan', 'jamkeluar', 'kmkeluar', 'jammasuk', 'kmmasuk', 'keterangan', 'id'); //field yang ada di table user
     var $column_search = array('nopol', 'namadriver', 'namahelper', 'tujuan');
     var $order = array('id' => 'asc');
@@ -314,15 +314,10 @@ class M_Hrd extends CI_Model
 
     public function truncate_lap_distribusi()
     {
-        return $this->db->truncate('tb_lap_distribusi');
+        return $this->db->truncate('hrdga_lap_distribusi');
     }
 
-    public function truncate_lap_tamu()
-    {
-        return $this->db->truncate('hrd_lap_tamu');
-    }
-
-    var $table1 = 'tb_tamu';
+    var $table1 = 'hrdga_tamu';
 
     var $column_order1 = [
         'tanggal', 'nama', 'perusahaan', 'alamat',
@@ -392,7 +387,7 @@ class M_Hrd extends CI_Model
         return $this->db->count_all($this->table1);
     }
 
-    var $table_karykm = 'tb_karyawan_keluarmasuk';
+    var $table_karykm = 'hrdga_karyawan_keluarmasuk';
 
     var $column_order_karykm = [
         'tanggal', 'nama', 'departemen', 'status',
@@ -458,7 +453,7 @@ class M_Hrd extends CI_Model
         return $this->db->count_all($this->table_karykm);
     }
 
-    var $table_expedisi = 'tb_expedisi';
+    var $table_expedisi = 'hrdga_expedisi';
     var $column_order_expedisi = [
         'tanggal', 'jamkeluar', 'jammasuk', 'nopol', 'namadriver',
         'notlpndriver', 'perusahaanpengirim', 'namabarang', 'jumlahbarang', 'keterangan',
@@ -473,7 +468,7 @@ class M_Hrd extends CI_Model
     {
         $this->db->select('a.*, penerima.nama_user AS nama_penerima');
         $this->db->from($this->table_expedisi . ' a');
-        $this->db->join('tb_user penerima', 'penerima.id = a.penerima_berkas_id', 'left');
+        $this->db->join('hrdga_user penerima', 'penerima.id = a.penerima_berkas_id', 'left');
 
         if ($this->session->userdata('departemen') === 'LOGISTIK') {
             $this->db->where('a.penerima_berkas_id', (int) $this->session->userdata('id'));
@@ -528,345 +523,6 @@ class M_Hrd extends CI_Model
         return $this->db->count_all($this->table_expedisi);
     }
 
-    var $table_pos = 'tb_terima_paket';
-
-    var $column_order_pos = [
-        'id',
-        'tanggal',
-        'kd_penerima',
-        'keterangan_1',
-        'tanggal_terima_1',
-        'tanggal_terima_2',
-        'jam_terima_1',
-        'jam_terima_2',
-        'status',
-        'inputer'
-    ];
-
-    var $column_search_pos = [
-        'kd_penerima',
-        'keterangan_1',
-        'status',
-        'inputer'
-    ];
-
-    var $order_pos = ['tanggal' => 'desc'];
-
-    private function apply_pos_paket_owner_scope($username)
-    {
-        $username = strtoupper(trim((string) $username));
-
-        if (in_array($username, ['HRD2', 'HRD4'], true)) {
-            return;
-        }
-
-        if ($username === '') {
-            $this->db->where('1 = 0', null, false);
-            return;
-        }
-
-        // ALIF KURNIAWAN is a legacy label for the ALIF account.
-        $owners = ($username === 'ALIF')
-            ? ['ALIF', 'ALIF KURNIAWAN']
-            : [$username];
-
-        $escapedOwners = array();
-        foreach ($owners as $owner) {
-            $escapedOwners[] = $this->db->escape($owner);
-        }
-        $this->db->where(
-            'UPPER(TRIM(kd_penerima)) IN (' . implode(',', $escapedOwners) . ')',
-            null,
-            false
-        );
-    }
-
-    private function _get_datatables_query_pos($username)
-    {
-        $this->db->from($this->table_pos);
-        $this->apply_pos_paket_owner_scope($username);
-
-        if (!empty($_POST['search']['value'])) {
-            $this->db->group_start();
-            $this->db->like('keterangan_1', $_POST['search']['value']);
-            $this->db->or_like('kd_penerima', $_POST['search']['value']);
-            $this->db->group_end();
-        }
-
-        if (isset($_POST['order'])) {
-            $this->db->order_by(
-                $this->column_order_pos[$_POST['order'][0]['column']],
-                $_POST['order'][0]['dir']
-            );
-        } else {
-            $this->db->order_by('tanggal', 'DESC');
-        }
-    }
-
-
-    public function get_datatables_get_pos_paket($user)
-    {
-        $this->_get_datatables_query_pos($user);
-
-        if ($_POST['length'] != -1) {
-            $this->db->limit($_POST['length'], $_POST['start']);
-        }
-
-        return $this->db->get()->result();
-    }
-
-
-    public function count_all_pos_paket($user)
-    {
-        $this->_get_datatables_query_pos($user);
-        return $this->db->count_all_results();
-    }
-
-    public function count_filtered_pos_paket($user)
-    {
-        $this->_get_datatables_query_pos($user);
-        return $this->db->get()->num_rows();
-    }
-
-
-    public function insert_penerimaan_paket($data)
-    {
-        return $this->db->insert('tb_terima_paket', $data);
-    }
-
-    public function update_penerimaan_paket($id, $data, $username)
-    {
-        $this->db->where('id', (int) $id);
-        $this->apply_pos_paket_owner_scope($username);
-        return $this->db->update('tb_terima_paket', $data);
-    }
-
-    public function get_paket_by_id($id, $username)
-    {
-        $this->db->from('tb_terima_paket');
-        $this->db->where('id', (int) $id);
-        $this->apply_pos_paket_owner_scope($username);
-        return $this->db->get()->row();
-    }
-
-    public function hapus_penerimaan_paket($id, $username)
-    {
-        $this->db->where('id', (int) $id);
-        $this->apply_pos_paket_owner_scope($username);
-        $this->db->delete('tb_terima_paket');
-
-        return $this->db->affected_rows();
-    }
-
-    public function insert_header_checklist_kendaraan($data)
-    {
-        $this->db->insert('tb_checklist_kendaraan', $data);
-        return $this->db->insert_id();
-    }
-
-    public function insert_foto_checklist($data)
-    {
-        return $this->db->insert('tb_gbrupload_cheklist', $data);
-    }
-
-    public function get_foto_checklist($id_checklist)
-    {
-        return $this->db
-            ->where('id_cheklist', $id_checklist)
-            ->get('tb_gbrupload_cheklist')
-            ->result();
-    }
-
-
-    public function insert_detail_checklist_kendaraan($data)
-    {
-        return $this->db->insert('tb_checklist_kendaraan_detail', $data);
-    }
-
-    public function get_master_parts_checklist_kendaraan()
-    {
-        return [
-            'KABIN' => [
-                'Kaca Depan', 'Kaca Samping L/R', 'Wipper', 'Pintu L/R',
-                'Handle Pintu L/R', 'Talang Air', 'Lampu-lampu', 'Body',
-                'Grill', 'Spion L/R', 'Roda Depan', 'Lain-lain'
-            ],
-            'BOX/BACK' => [
-                'Box Bagian Luar', 'Box Bagian Dalam', 'Pintu Box Belakang',
-                'Pintu Box Samping', 'Accu', 'Lampu-lampu', 'Tangki BBM + Tutup',
-                'Gembok', 'Ban Belakang', 'Ban Serep',
-                'Kebersihan Dalam', 'Kebersihan Luar'
-            ]
-        ];
-    }
-
-    public function get_laporan_checklist_kendaraan($filter)
-    {
-        $this->db->select('
-            h.id,
-            h.tanggal_check,
-            h.driver,
-            h.nopol,
-            h.no_lambung,
-            h.kilometer,
-            h.inputer,
-            SUM(CASE WHEN d.kondisi = "TIDAK BAIK" THEN 1 ELSE 0 END) AS total_tidak_baik
-        ');
-        $this->db->from('tb_checklist_kendaraan h');
-        $this->db->join('tb_checklist_kendaraan_detail d', 'd.checklist_id = h.id', 'left');
-        $this->db->group_by('h.id');
-
-        if (!empty($filter['tanggal_awal'])) {
-            $this->db->where('h.tanggal_check >=', $filter['tanggal_awal']);
-        }
-
-        if (!empty($filter['tanggal_akhir'])) {
-            $this->db->where('h.tanggal_check <=', $filter['tanggal_akhir']);
-        }
-
-        if (!empty($filter['nopol'])) {
-            $this->db->like('h.nopol', $filter['nopol']);
-        }
-
-        if (!empty($filter['driver'])) {
-            $this->db->like('h.driver', $filter['driver']);
-        }
-
-        return $this->db->get()->result();
-    }
-
-    public function get_detail_checklist($checklist_id)
-    {
-        return $this->db
-            ->where('checklist_id', $checklist_id)
-            ->get('tb_checklist_kendaraan_detail')
-            ->result();
-    }
-
-    var $table_checklist_kendaraan = 'tb_checklist_kendaraan h';
-
-    var $column_order_checklist_kendaraan = [
-        null,
-        'tanggal_check',
-        'driver',
-        'nopol',
-        'no_lambung',
-        'kilometer',
-        null,
-        null
-    ];
-
-    var $column_search_checklist_kendaraan = [
-        'driver',
-        'nopol',
-        'no_lambung'
-    ];
-
-    var $order_checklist_kendaraan = ['tanggal_check' => 'desc'];
-
-    private function _get_datatables_query_checklist_kendaraan()
-    {
-        $this->db->select('
-            h.id,
-            h.tanggal_check,
-            h.driver,
-            h.nopol,
-            h.no_lambung,
-            h.kilometer,
-            h.inputer,
-            SUM(CASE WHEN d.kondisi = "TIDAK BAIK" THEN 1 ELSE 0 END) AS total_tidak_baik
-        ');
-        $this->db->from($this->table_checklist_kendaraan);
-        $this->db->join(
-            'tb_checklist_kendaraan_detail d',
-            'd.checklist_id = h.id',
-            'left'
-        );
-        $this->db->group_by('h.id');
-
-        if (!empty($_POST['search']['value'])) {
-            $this->db->group_start();
-            foreach ($this->column_search_checklist_kendaraan as $item) {
-                $this->db->or_like($item, $_POST['search']['value']);
-            }
-            $this->db->group_end();
-        }
-
-        if (isset($_POST['order'])) {
-            $this->db->order_by(
-                $this->column_order_checklist_kendaraan[$_POST['order'][0]['column']],
-                $_POST['order'][0]['dir']
-            );
-        } else {
-            $this->db->order_by(
-                key($this->order_checklist_kendaraan),
-                $this->order_checklist_kendaraan[key($this->order_checklist_kendaraan)]
-            );
-        }
-    }
-
-    public function get_datatables_checklist_kendaraan()
-    {
-        $this->_get_datatables_query_checklist_kendaraan();
-        if ($_POST['length'] != -1)
-            $this->db->limit($_POST['length'], $_POST['start']);
-
-        return $this->db->get()->result();
-    }
-
-    public function count_filtered_checklist_kendaraan()
-    {
-        $this->_get_datatables_query_checklist_kendaraan();
-        return $this->db->get()->num_rows();
-    }
-
-    public function count_all_checklist_kendaraan()
-    {
-        return $this->db
-            ->from($this->table_checklist_kendaraan)
-            ->count_all_results();
-    }
-
-    public function get_checklist_header($id)
-    {
-        return $this->db
-            ->where('id', $id)
-            ->get('tb_checklist_kendaraan')
-            ->row();
-    }
-
-    public function get_checklist_detail_grouped($id)
-    {
-        $query = $this->db
-            ->where('checklist_id', $id)
-            ->order_by('kategori, nama_part')
-            ->get('tb_checklist_kendaraan_detail')
-            ->result();
-
-        $grouped = [];
-        foreach ($query as $row) {
-            $grouped[$row->kategori][] = $row;
-        }
-
-        return $grouped;
-    }
-
-    public function get_exported_checklist_kendaraan()
-    {
-        return $this->db->query("SELECT
-            h.id,
-            h.tanggal_check,
-            h.nopol,
-            h.driver,
-            COUNT(DISTINCT d.kategori) AS total_kategori,
-            COUNT(d.id) AS total_part,
-            SUM(CASE WHEN d.kondisi = 'BAIK' THEN 1 ELSE 0 END) AS total_baik,
-            SUM(CASE WHEN d.kondisi = 'TIDAK BAIK' THEN 1 ELSE 0 END) AS total_tidak_baik
-        FROM tb_checklist_kendaraan h
-        LEFT JOIN tb_checklist_kendaraan_detail d ON d.checklist_id = h.id
-        GROUP BY h.id;")->result();
-    }
-
     public function get_truck_checkup_list($limit = 50)
     {
         return $this->db->query("
@@ -879,8 +535,8 @@ class M_Hrd extends CI_Model
                 h.input_by,
                 COUNT(d.id_detail) AS total_item,
                 SUM(CASE WHEN UPPER(d.status) = 'TIDAK BAIK' THEN 1 ELSE 0 END) AS total_problem
-            FROM tb_checkup_mekanik h
-            LEFT JOIN tb_checkup_mekanik_detail d ON d.id_ckup = h.id_ckup
+            FROM hrdga_checkup_mekanik h
+            LEFT JOIN hrdga_checkup_mekanik_detail d ON d.id_ckup = h.id_ckup
             GROUP BY h.id_ckup
             ORDER BY h.id_ckup DESC
             LIMIT " . (int) $limit . "
@@ -891,7 +547,7 @@ class M_Hrd extends CI_Model
     {
         return $this->db
             ->where('id_ckup', (int) $id)
-            ->get('tb_checkup_mekanik')
+            ->get('hrdga_checkup_mekanik')
             ->row();
     }
 
@@ -909,12 +565,12 @@ class M_Hrd extends CI_Model
                 f.foto_list AS foto_kategori,
                 k.nm_kategori,
                 kd.nm_detail
-            FROM tb_checkup_mekanik_detail d
-            LEFT JOIN tb_checkup_mekanik_kategori k ON k.id_kategori = d.id_kategori
-            LEFT JOIN tb_checkup_mekanik_kategori_detail kd ON kd.id_detail_kat = d.id_detail_kat
+            FROM hrdga_checkup_mekanik_detail d
+            LEFT JOIN hrdga_checkup_mekanik_kategori k ON k.id_kategori = d.id_kategori
+            LEFT JOIN hrdga_checkup_mekanik_kategori_detail kd ON kd.id_detail_kat = d.id_detail_kat
             LEFT JOIN (
                 SELECT id_ckup, id_kategori, GROUP_CONCAT(foto) AS foto_list
-                FROM tb_checkup_mekanik_kategori_foto
+                FROM hrdga_checkup_mekanik_kategori_foto
                 GROUP BY id_ckup, id_kategori
             ) f ON f.id_ckup = d.id_ckup AND f.id_kategori = d.id_kategori
             WHERE d.id_ckup = " . (int) $id . "
@@ -924,25 +580,25 @@ class M_Hrd extends CI_Model
 
     public function insert_truck_checkup_header($data)
     {
-        $this->db->insert('tb_checkup_mekanik', $data);
+        $this->db->insert('hrdga_checkup_mekanik', $data);
         return $this->db->insert_id();
     }
 
     public function insert_truck_checkup_detail($data)
     {
-        return $this->db->insert('tb_checkup_mekanik_detail', $data);
+        return $this->db->insert('hrdga_checkup_mekanik_detail', $data);
     }
 
     public function insert_truck_checkup_kategori_foto($data)
     {
-        return $this->db->insert('tb_checkup_mekanik_kategori_foto', $data);
+        return $this->db->insert('hrdga_checkup_mekanik_kategori_foto', $data);
     }
 
     public function get_mekanik_kategori_all()
     {
         return $this->db
             ->order_by('id_kategori', 'asc')
-            ->get('tb_checkup_mekanik_kategori')
+            ->get('hrdga_checkup_mekanik_kategori')
             ->result();
     }
 
@@ -950,34 +606,34 @@ class M_Hrd extends CI_Model
     {
         return $this->db
             ->where('id_kategori', (int) $id)
-            ->get('tb_checkup_mekanik_kategori')
+            ->get('hrdga_checkup_mekanik_kategori')
             ->row();
     }
 
     public function insert_mekanik_kategori($data)
     {
-        return $this->db->insert('tb_checkup_mekanik_kategori', $data);
+        return $this->db->insert('hrdga_checkup_mekanik_kategori', $data);
     }
 
     public function update_mekanik_kategori($id, $data)
     {
         return $this->db
             ->where('id_kategori', (int) $id)
-            ->update('tb_checkup_mekanik_kategori', $data);
+            ->update('hrdga_checkup_mekanik_kategori', $data);
     }
 
     public function delete_mekanik_kategori($id)
     {
         return $this->db
             ->where('id_kategori', (int) $id)
-            ->delete('tb_checkup_mekanik_kategori');
+            ->delete('hrdga_checkup_mekanik_kategori');
     }
 
     public function count_mekanik_detail_by_kategori($id)
     {
         return $this->db
             ->where('id_kategori', (int) $id)
-            ->from('tb_checkup_mekanik_kategori_detail')
+            ->from('hrdga_checkup_mekanik_kategori_detail')
             ->count_all_results();
     }
 
@@ -989,8 +645,8 @@ class M_Hrd extends CI_Model
                 d.id_kategori,
                 d.nm_detail,
                 k.nm_kategori
-            FROM tb_checkup_mekanik_kategori_detail d
-            LEFT JOIN tb_checkup_mekanik_kategori k ON k.id_kategori = d.id_kategori
+            FROM hrdga_checkup_mekanik_kategori_detail d
+            LEFT JOIN hrdga_checkup_mekanik_kategori k ON k.id_kategori = d.id_kategori
             ORDER BY d.id_kategori ASC, d.id_detail_kat ASC
         ")->result();
     }
@@ -999,27 +655,27 @@ class M_Hrd extends CI_Model
     {
         return $this->db
             ->where('id_detail_kat', (int) $id)
-            ->get('tb_checkup_mekanik_kategori_detail')
+            ->get('hrdga_checkup_mekanik_kategori_detail')
             ->row();
     }
 
     public function insert_mekanik_kategori_detail($data)
     {
-        return $this->db->insert('tb_checkup_mekanik_kategori_detail', $data);
+        return $this->db->insert('hrdga_checkup_mekanik_kategori_detail', $data);
     }
 
     public function update_mekanik_kategori_detail($id, $data)
     {
         return $this->db
             ->where('id_detail_kat', (int) $id)
-            ->update('tb_checkup_mekanik_kategori_detail', $data);
+            ->update('hrdga_checkup_mekanik_kategori_detail', $data);
     }
 
     public function delete_mekanik_kategori_detail($id)
     {
         return $this->db
             ->where('id_detail_kat', (int) $id)
-            ->delete('tb_checkup_mekanik_kategori_detail');
+            ->delete('hrdga_checkup_mekanik_kategori_detail');
     }
 
     public function get_master_checkup_join()
@@ -1030,8 +686,8 @@ class M_Hrd extends CI_Model
                 k.nm_kategori,
                 d.id_detail_kat,
                 d.nm_detail
-            FROM tb_checkup_mekanik_kategori k
-            LEFT JOIN tb_checkup_mekanik_kategori_detail d
+            FROM hrdga_checkup_mekanik_kategori k
+            LEFT JOIN hrdga_checkup_mekanik_kategori_detail d
                 ON d.id_kategori = k.id_kategori
             ORDER BY k.id_kategori ASC, d.id_detail_kat ASC
         ")->result();

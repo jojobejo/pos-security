@@ -129,12 +129,6 @@
                     Export File
                   </a>
                 </div>
-                <div class="col-auto">
-                  <a href="<?= base_url('truncate_all_data_tamu') ?>" class="btn btn-sm btn-danger">
-                    <i class="fas fa-trash"></i>
-                    Hapus Data Tamu
-                  </a>
-                </div>
               </div>
 
             </div>

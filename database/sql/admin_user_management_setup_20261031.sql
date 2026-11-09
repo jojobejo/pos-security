@@ -1,6 +1,6 @@
--- Setup akun admin untuk modul User Management (CodeIgniter / tb_user).
+-- Setup akun admin untuk modul User Management (CodeIgniter / hrdga_user).
 -- Jalankan hanya pada database aplikasi yang benar; tidak mengubah skema.
-UPDATE `tb_user`
+UPDATE `hrdga_user`
 SET `nama_user` = 'SUPERADMIN',
     `departemen` = 'IT',
     `akses_lv` = 1,
@@ -9,5 +9,5 @@ WHERE `username` = 'admin';
 
 -- Verifikasi harus menghasilkan tepat satu baris akun level 1 departemen IT.
 SELECT `id`, `username`, `nama_user`, `departemen`, `akses_lv`
-FROM `tb_user`
+FROM `hrdga_user`
 WHERE `username` = 'admin';

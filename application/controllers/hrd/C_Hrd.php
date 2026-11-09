@@ -14,11 +14,7 @@ class C_Hrd extends CI_Controller
 
     public function index()
     {
-        $data['page_title'] = 'KARISMA';
-
-        $this->load->view('partial/main/header.php', $data);
-        $this->load->view('content/body.php', $data);
-        $this->load->view('partial/main/footer.php');
+        redirect('dashboard');
     }
 
     // TAMPILAN HALAMAN ADD
@@ -247,14 +243,14 @@ class C_Hrd extends CI_Controller
 
     public function get_tamu_by_id($id)
     {
-        $data = $this->db->get_where('tb_tamu', ['id' => $id])->row();
+        $data = $this->db->get_where('hrdga_tamu', ['id' => $id])->row();
         echo json_encode($data);
     }
 
     public function hapus_tamu()
     {
         $id = $this->input->post('id');
-        $this->db->delete('tb_tamu', ['id' => $id]);
+        $this->db->delete('hrdga_tamu', ['id' => $id]);
         echo json_encode(['status' => true]);
     }
 
@@ -414,7 +410,7 @@ class C_Hrd extends CI_Controller
     public function get_karykm_by_id($id)
     {
         $data = $this->db
-            ->get_where('tb_karyawan_keluarmasuk', ['id' => $id])
+            ->get_where('hrdga_karyawan_keluarmasuk', ['id' => $id])
             ->row();
 
         echo json_encode($data);
@@ -423,7 +419,7 @@ class C_Hrd extends CI_Controller
     public function hapus_karykm()
     {
         $id = $this->input->post('id');
-        $this->db->delete('tb_karyawan_keluarmasuk', ['id' => $id]);
+        $this->db->delete('hrdga_karyawan_keluarmasuk', ['id' => $id]);
         echo json_encode(['status' => true]);
     }
 
@@ -597,14 +593,6 @@ class C_Hrd extends CI_Controller
 
 
 
-    public function kpi_digital()
-    {
-        $kduser = $this->session->userdata('kode');
-        $data['kpi']    = $this->M_hrd->getkpi($kduser);
-    }
-
-
-    // FUNGSI CRUD
     public function tambah_lap_expedisi()
     {
         if ($this->session->userdata('username') !== 'HRD4') {
@@ -624,7 +612,7 @@ class C_Hrd extends CI_Controller
         $inputer = trim($this->input->post('inputer', true));
         $penerimaBerkasId = (int) $this->input->post('penerima_berkas_id');
 
-        $penerima = $this->db->get_where('tb_user', [
+        $penerima = $this->db->get_where('hrdga_user', [
             'id' => $penerimaBerkasId,
             'departemen' => 'LOGISTIK',
         ])->row();
@@ -665,7 +653,7 @@ class C_Hrd extends CI_Controller
         $penerimaBerkasId = (int) $this->input->post('penerima_berkas_id');
         $inputer = trim($this->input->post('inputer', true));
         $laporan = $this->M_Hrd->get_expedisi_by_id($id);
-        $penerima = $this->db->get_where('tb_user', [
+        $penerima = $this->db->get_where('hrdga_user', [
             'id' => $penerimaBerkasId,
             'departemen' => 'LOGISTIK',
         ])->row();
@@ -708,7 +696,7 @@ class C_Hrd extends CI_Controller
             return;
         }
         $id = $this->input->post('id');
-        $this->db->delete('tb_expedisi', ['id' => $id]);
+        $this->db->delete('hrdga_expedisi', ['id' => $id]);
         echo json_encode(['status' => true]);
     }
 
@@ -1472,138 +1460,6 @@ class C_Hrd extends CI_Controller
         $write->save('php://output');
     }
 
-    public function export_laporan_checklist_kendaraan()
-    {
-        include APPPATH . 'third_party/PHPExcel/PHPExcel.php';
-        $excel = new PHPExcel();
-        $excel->getProperties()->setCreator('it_karisma')
-            ->setLastModifiedBy('sys_karisma_')
-            ->setTitle("Laporan Checklist Kendaraan")
-            ->setSubject("Rekap Checklist")
-            ->setDescription("Rekap Checklist Kendaraan")
-            ->setKeywords("Checklist Kendaraan");
-
-        $style_col = array(
-            'font' => array('bold' => true),
-            'alignment' => array(
-                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
-            ),
-            'borders' => array(
-                'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),
-                'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),
-                'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),
-                'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN)
-            )
-        );
-
-        $style_row = array(
-            'alignment' => array(
-                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER
-            ),
-            'borders' => array(
-                'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),
-                'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),
-                'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),
-                'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN)
-            )
-        );
-
-        $excel->setActiveSheetIndex(0)->setCellValue('A1', "Rekap Laporan Checklist Kendaraan");
-        $excel->getActiveSheet()->mergeCells('A1:H1');
-        $excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE);
-        $excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15);
-        $excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-
-        $excel->setActiveSheetIndex(0)->setCellValue('A3', "NO");
-        $excel->setActiveSheetIndex(0)->setCellValue('B3', "TANGGAL CHEKC");
-        $excel->setActiveSheetIndex(0)->setCellValue('C3', "NOPOL");
-        $excel->setActiveSheetIndex(0)->setCellValue('D3', "DRIVER");
-        $excel->setActiveSheetIndex(0)->setCellValue('E3', "KATAGORI CEK");
-        $excel->setActiveSheetIndex(0)->setCellValue('F3', "TOTAL PART CEK");
-        $excel->setActiveSheetIndex(0)->setCellValue('G3', "TOTAL PART BAIK");
-        $excel->setActiveSheetIndex(0)->setCellValue('H3', "TOTAL PART TIDAK BAIK");
-
-        $excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('B3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
-        $excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
-
-        $export = $this->M_Hrd->get_exported_checklist_kendaraan();
-
-        $no = 1;
-        $numrow = 4;
-        foreach ($export as $data) {
-            $excel->setActiveSheetIndex(0)->setCellValue('A' . $numrow, $no);
-            $excel->setActiveSheetIndex(0)->setCellValue('B' . $numrow, $data->tanggal_check);
-            $excel->setActiveSheetIndex(0)->setCellValue('C' . $numrow, $data->nopol);
-            $excel->setActiveSheetIndex(0)->setCellValue('D' . $numrow, $data->driver);
-            $excel->setActiveSheetIndex(0)->setCellValue('E' . $numrow, $data->total_kategori);
-            $excel->setActiveSheetIndex(0)->setCellValue('F' . $numrow, $data->total_part);
-            $excel->setActiveSheetIndex(0)->setCellValue('G' . $numrow, $data->total_baik);
-            $excel->setActiveSheetIndex(0)->setCellValue('H' . $numrow, $data->total_tidak_baik);
-            $excel->getActiveSheet()->getStyle('A' . $numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('B' . $numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('C' . $numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('D' . $numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('E' . $numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('F' . $numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('G' . $numrow)->applyFromArray($style_row);
-            $excel->getActiveSheet()->getStyle('H' . $numrow)->applyFromArray($style_row);
-            $no++;
-            $numrow++;
-        }
-
-        $excel->getActiveSheet()->getColumnDimension('A')->setWidth(5);
-        $excel->getActiveSheet()->getColumnDimension('B')->setWidth(15);
-        $excel->getActiveSheet()->getColumnDimension('C')->setWidth(15);
-        $excel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
-        $excel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
-        $excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
-        $excel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
-        $excel->getActiveSheet()->getColumnDimension('H')->setWidth(15);
-        $excel->getActiveSheet()->getDefaultRowDimension()->setRowHeight(-1);
-        $excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-        $excel->getActiveSheet(0)->setTitle("Rekap Checklist Kendaraan");
-        $excel->setActiveSheetIndex(0);
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="Rekap_Laporan_Checklist_Kendaraan.xlsx"');
-        header('Cache-Control: max-age=0');
-
-        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-        $write->save('php://output');
-    }
-
-    // SERVERSIDE SYSTEM 
-
-    function get_server_issue()
-    {
-
-        $list = $this->M_Hrd->get_datatables();
-        $data = array();
-        foreach ($list as $field) {
-            $row = array();
-            $row[] = $field->kode_barang;
-            $row[] = $field->nama_barang;
-            $row[] = $field->qty_box;
-            $row[] = $field->qty_pcs;
-            $data[] = $row;
-        }
-
-        $output = array(
-            "draw" => $_POST['draw'],
-            "recordsTotal" => $this->M_Inventor->count_all(),
-            "recordsFiltered" => $this->M_Inventor->count_filtered(),
-            "data" => $data,
-        );
-        //output dalam format JSON
-        echo json_encode($output);
-    }
-
     public function truncate_laporan_distribusi()
     {
 
@@ -1611,428 +1467,6 @@ class C_Hrd extends CI_Controller
 
         $this->session->set_flashdata('success', 'Data laporan distribusi berhasil dikosongkan');
         redirect('hrd_lap_distribusi');
-    }
-
-    public function truncate_laporan_loby()
-    {
-
-        $this->M_Hrd->truncate_lap_tamu();
-
-        $this->session->set_flashdata('success', 'Data laporan distribusi berhasil dikosongkan');
-        redirect('hrd_lap_distribusi');
-    }
-
-    public function hrd_lap_penerimaan_pos()
-    {
-        $data['page_title'] = 'Penerimaan POS Paket';
-        $data['confirm_only'] = $this->paket_pos_confirmation_only();
-
-        $this->load->view('partial/main/header.php', $data);
-        $this->load->view('content/hrd/getpostpaket.php', $data);
-        $this->load->view('partial/main/footer.php');
-        $this->load->view('content/hrd/ajaxhrd_pospaket.php');
-    }
-
-    private function paket_pos_confirmation_only()
-    {
-        $username = $this->session->userdata('username');
-        $department = $this->session->userdata('departemen');
-        return strtoupper(trim((string) $username)) === 'ALIF'
-            || ($username === 'HRD2' && $department === 'HRD&GA')
-            || in_array($department, ['KEUANGAN', 'MIA', 'HRD & GA'], true);
-    }
-
-    public function lap_penerimaan_pos_serverside()
-    {
-        $list = $this->M_Hrd->get_datatables_get_pos_paket(
-            $this->session->userdata('username')
-        );
-
-        $data = [];
-        $confirmOnly = $this->paket_pos_confirmation_only();
-
-        foreach ($list as $l) {
-            $row = [];
-
-            // ===== STATUS =====
-            $status_label = ($l->status == 1)
-                ? '<span class="badge badge-success">TELAH DIKONFIRMASI</span>'
-                : '<span class="badge badge-secondary">BELUM DIKONFIRMASI</span>';
-
-            // ===== MAPPING PENERIMA =====
-            switch ($l->kd_penerima) {
-                case 'IKA':
-                case 'SUKMA':
-                case 'SUPRIYANTO':
-                    $penerima_raw = 'KEUANGAN';
-                    break;
-                case 'LADY':
-                    $penerima_raw = 'PURCHASING';
-                    break;
-                case 'NITA':
-                case 'MARISA':
-                    $penerima_raw = 'HRD & GA';
-                    break;
-                case 'ALIF':
-                case 'ALIF KURNIAWAN':
-                    $penerima_raw = 'LOGISTIK';
-                    break;
-                // case 'MIA':
-                //     $penerima_raw = 'MIA';
-                //     break;
-                    // case 'SHEILA':
-                    //     $penerima_raw = 'KARISMA ONLINE';
-                    //     break;
-                default:
-                    $penerima_raw = $l->kd_penerima;
-                    break;
-            }
-
-            // ===== BADGE PENERIMA =====
-            if ($penerima_raw === 'KEUANGAN') {
-                $penerima = '<span class="badge badge-primary">KEUANGAN</span>';
-            } elseif ($penerima_raw === 'SHEILA') {
-                $penerima = '<span class="badge badge-success">KARISMA ONLINE</span>';
-            } elseif ($penerima_raw === 'MIA') {
-                $penerima = '<span class="badge badge-warning">MIA</span>';
-            } else {
-                $penerima = '<span class="badge badge-info">' . $penerima_raw . '</span>';
-            }
-
-            $row[] = $l->tanggal;
-            $row[] = $l->kd_penerima;
-            $row[] = $penerima;
-            $row[] = $l->keterangan_1;
-            $row[] = $l->tanggal_terima_1;
-            $row[] = $l->tanggal_terima_2;
-            $row[] = $l->jam_terima_1;
-            $row[] = $l->jam_terima_2;
-            $row[] = $status_label;
-
-
-            if ($confirmOnly) {
-                $row[] = '
-           <button class="btn btn-success btn-sm btn-konfirmasi"
-                data-toggle="modal"
-                data-target="#modalKonfirmasi"
-                data-id="' . $l->id . '">
-                <i class="fa fa-check"></i>
-            </button>
-            ';
-            } else {
-                $row[] = html_escape($l->inputer);
-                $row[] = '
-            <div class="row">
-                                <div class="col-6">
-                                    <button class="btn btn-warning btn-sm btn-edit" data-id="' . $l->id . '">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                </div>
-                                <div class="col-6">
-                                    <button class="btn btn-danger btn-sm btn-hapus" data-id="' . $l->id . '">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-            ';
-            }
-            $data[] = $row;
-        }
-
-        $user = $this->session->userdata('username');
-
-        echo json_encode([
-            "draw"            => intval($_POST['draw']),
-            "recordsTotal"    => $this->M_Hrd->count_all_pos_paket($user),
-            "recordsFiltered" => $this->M_Hrd->count_filtered_pos_paket($user),
-            "data"            => $data,
-        ]);
-    }
-
-
-    public function get_paket_by_id($id)
-    {
-        if (strtoupper(trim((string) $this->session->userdata('username'))) === 'ALIF') {
-            $this->output->set_status_header(403);
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode(['status' => false]));
-            return;
-        }
-
-        $data = $this->M_Hrd->get_paket_by_id($id, $this->session->userdata('username'));
-        echo json_encode($data);
-    }
-
-    public function edit_penerimaan_paket()
-    {
-        $id = $this->input->post('id');
-        $username = strtoupper(trim((string) $this->session->userdata('username')));
-        if ($username === 'ALIF') {
-            $this->output->set_status_header(403);
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode(['status' => false]));
-            return;
-        }
-
-        $data = [
-            'tanggal'          => $this->input->post('tanggal'),
-            'kd_penerima'      => in_array($username, ['HRD2', 'HRD4'], true)
-                ? $this->input->post('kd_penerima')
-                : $username,
-            'keterangan_1'     => $this->input->post('keterangan_1'),
-            'tanggal_terima_1' => $this->input->post('tanggal_terima_1'),
-            'jam_terima_1'     => $this->input->post('jam_terima_1'),
-        ];
-
-        $updated = $this->M_Hrd->update_penerimaan_paket($id, $data, $username);
-        echo json_encode(['status' => (bool) $updated]);
-    }
-
-    public function hapus_penerimaan_paket()
-    {
-        if (strtoupper(trim((string) $this->session->userdata('username'))) === 'ALIF') {
-            $this->output->set_status_header(403);
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode(['status' => false]));
-            return;
-        }
-
-        $id = $this->input->post('id');
-
-        if (!$id) {
-            echo json_encode(['status' => false]);
-            return;
-        }
-
-        $delete = $this->M_Hrd->hapus_penerimaan_paket($id, $this->session->userdata('username'));
-
-        echo json_encode([
-            'status' => $delete ? true : false
-        ]);
-    }
-
-    public function tambah_penerimaan_paket()
-    {
-        $username = strtoupper(trim((string) $this->session->userdata('username')));
-        if ($username === 'ALIF') {
-            $this->output->set_status_header(403);
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode(['status' => false]));
-            return;
-        }
-
-        $data = [
-            'tanggal'            => $this->input->post('tanggal'),
-            'kd_penerima'        => in_array($username, ['HRD2', 'HRD4'], true)
-                ? $this->input->post('kd_penerima')
-                : $username,
-            'keterangan_1'       => $this->input->post('keterangan_1'),
-            'tanggal_terima_1'   => $this->input->post('tanggal_terima_1'),
-            'tanggal_terima_2'   => $this->input->post('tanggal_terima_2'),
-            'jam_terima_1'       => $this->input->post('jam_terima_1'),
-            'jam_terima_2'       => $this->input->post('jam_terima_2'),
-            'status'             => 'BELUM DITERIMA',
-            'inputer'            => ($username === 'HRD4')
-                ? trim((string) $this->input->post('inputer', true))
-                : $this->session->userdata('nama_user'),
-        ];
-
-        if (
-            empty($data['tanggal']) ||
-            empty($data['kd_penerima']) ||
-            empty($data['keterangan_1']) ||
-            empty($data['status']) ||
-            empty($data['inputer'])
-        ) {
-            echo json_encode([
-                'status' => false,
-                'message' => 'Field wajib belum lengkap'
-            ]);
-            return;
-        }
-
-        $this->M_Hrd->insert_penerimaan_paket($data);
-
-        echo json_encode([
-            'status' => true,
-            'message' => 'Data penerimaan paket berhasil disimpan'
-        ]);
-    }
-
-    public function konfirmasi_penerimaan_paket()
-    {
-        $id = $this->input->post('id');
-
-        $data = [
-            'tanggal_terima_2' => $this->input->post('tanggal_terima_2'),
-            'jam_terima_2'     => $this->input->post('jam_terima_2'),
-            'status'           => '1'
-        ];
-
-        $this->M_Hrd->update_penerimaan_paket($id, $data, $this->session->userdata('username'));
-        redirect('hrd_lap_paket_pos');
-    }
-
-    public function checklist_kendaraan()
-    {
-        $data['page_title'] = 'Checklist Kendaraan';
-        $data['parts'] = $this->M_Hrd->get_master_parts_checklist_kendaraan();
-
-
-        $this->load->view('partial/main/header.php', $data);
-        $this->load->view('content/hrd/checklist_kendaraan.php', $data);
-        $this->load->view('partial/main/footer.php');
-    }
-
-    public function store_checklist_kendaraan()
-    {
-        $tanggal = date('Y-m-d');
-
-        $header = [
-            'tanggal_check' => $tanggal,
-            'driver'        => $this->input->post('driver'),
-            'nopol'         => $this->input->post('nopol'),
-            'no_lambung'    => $this->input->post('no_lambung'),
-            'kilometer'     => $this->input->post('kilometer'),
-            'inputer'       => $this->input->post('inputer')
-        ];
-
-        $checklist_id = $this->M_Hrd->insert_header_checklist_kendaraan($header);
-
-        foreach ($this->input->post('part') as $row) {
-            $detail = [
-                'checklist_id' => $checklist_id,
-                'kategori'     => $row['kategori'],
-                'nama_part'    => $row['nama_part'],
-                'kondisi'      => $row['kondisi'],
-                'keterangan'   => $row['keterangan']
-            ];
-
-            $this->M_Hrd->insert_detail_checklist_kendaraan($detail);
-        }
-
-        if (!empty($_FILES['foto']['name'][0])) {
-
-            $config = [
-                'upload_path'   => './uploads/checklist_kendaraan/',
-                'allowed_types' => 'jpg|jpeg|png',
-                'max_size'      => 5120
-            ];
-
-            $this->load->library('upload');
-
-            foreach ($_FILES['foto']['name'] as $i => $name) {
-
-                $_FILES['file']['name']     = $_FILES['foto']['name'][$i];
-                $_FILES['file']['type']     = $_FILES['foto']['type'][$i];
-                $_FILES['file']['tmp_name'] = $_FILES['foto']['tmp_name'][$i];
-                $_FILES['file']['error']    = $_FILES['foto']['error'][$i];
-                $_FILES['file']['size']     = $_FILES['foto']['size'][$i];
-
-                $config['file_name'] = 'CHK_' . $checklist_id . '_' . time() . '_' . $i;
-                $this->upload->initialize($config);
-
-                if ($this->upload->do_upload('file')) {
-
-                    $upload_data = $this->upload->data();
-                    $file_path   = $upload_data['full_path'];
-                    $file_size   = filesize($file_path);
-
-                    if ($file_size > 2 * 1024 * 1024) {
-
-                        $this->load->library('image_lib');
-
-                        $config_resize['image_library']  = 'gd2';
-                        $config_resize['source_image']   = $file_path;
-                        $config_resize['maintain_ratio'] = TRUE;
-                        $config_resize['quality']        = '60%';
-                        $config_resize['width']  = 1280;
-                        $config_resize['height'] = 1280;
-
-                        $this->image_lib->initialize($config_resize);
-
-                        if (!$this->image_lib->resize()) {
-                            log_message('error', $this->image_lib->display_errors());
-                        }
-
-                        $this->image_lib->clear();
-                    }
-
-                    $this->M_Hrd->insert_foto_checklist([
-                        'id_cheklist'  => $checklist_id,
-                        'name_file'    => $upload_data['file_name'],
-                        'path'         => 'uploads/checklist_kendaraan/' . $upload_data['file_name']
-                    ]);
-                } else {
-                    log_message('error', $this->upload->display_errors());
-                }
-            }
-        }
-
-        redirect('hrd_chelklist_kendaraan');
-    }
-
-
-    public function all_laporan_chelist_kendaraan()
-    {
-
-        $data['page_title'] = 'Checklist Kendaraan';
-
-        $this->load->view('partial/main/header.php', $data);
-        $this->load->view('content/hrd/laporan_checklist_kendaraan.php');
-        $this->load->view('partial/main/footer.php');
-    }
-
-    public function ajax_checklist_kendaraan()
-    {
-        $list = $this->M_Hrd->get_datatables_checklist_kendaraan();
-        $data = [];
-        $no   = $_POST['start'];
-
-        foreach ($list as $row) {
-            $no++;
-            $status = $row->total_tidak_baik > 0
-                ? '<span class="badge badge-danger w-100">' . $row->total_tidak_baik . ' Masalah</span>'
-                : '<span class="badge badge-success w-100">Normal</span>';
-
-            $data[] = [
-                $no,
-                date('d-m-Y', strtotime($row->tanggal_check)),
-                $row->driver,
-                $row->nopol,
-                $row->no_lambung,
-                number_format($row->kilometer),
-                $row->inputer,
-                $status,
-                '<a href="' . base_url('detail_checklist_kendaraan/' . $row->id) . '" 
-                class="btn btn-sm btn-info w-100">Detail</a>'
-            ];
-        }
-
-        echo json_encode([
-            "draw"            => $_POST['draw'],
-            "recordsTotal"    => $this->M_Hrd->count_all_checklist_kendaraan(),
-            "recordsFiltered" => $this->M_Hrd->count_filtered_checklist_kendaraan(),
-            "data"            => $data
-        ]);
-    }
-
-    public function detail_checklist($id)
-    {
-
-        $data['page_title'] = 'Checklist Kendaraan';
-        $data['foto'] = $this->M_Hrd->get_foto_checklist($id);
-
-        $data['header'] = $this->M_Hrd->get_checklist_header($id);
-        $data['detail'] = $this->M_Hrd->get_checklist_detail_grouped($id);
-
-        if (!$data['header']) {
-            show_404();
-        }
-
-        $this->load->view('partial/main/header.php', $data);
-        $this->load->view('content/hrd/detail_checklist_kendaraan.php');
-        $this->load->view('partial/main/footer.php');
     }
 
     public function ajax_truck_checkup_list()

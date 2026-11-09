@@ -177,6 +177,7 @@ class C_Logistik extends CI_Controller
         );
 
         $jumlah = count($this->input->post('nm_driver_i[]'));
+        $this->db->trans_start();
         for ($i = 0; $i < $jumlah; $i++) {
             $data = array(
                 'norut' => $this->input->post('no_urut_i')[$i],
@@ -206,6 +207,10 @@ class C_Logistik extends CI_Controller
             $this->M_Logistik->insert_detail_order_driver($data);
         }
         $this->M_Logistik->insert_deliveri_order($dataOrder);
+        $this->db->trans_complete();
+        if (!$this->db->trans_status()) {
+            show_error('Order pengiriman gagal disimpan.');
+        }
         redirect('deliveriorder');
     }
     public function editorderdeliver()
@@ -313,9 +318,9 @@ class C_Logistik extends CI_Controller
                 'note_pending' => $pending
             );
         }
-        $this->db->insert_batch('tb_driver_pending', $result);
+        $this->db->insert_batch('hrdga_driver_pending', $result);
         $this->db->where_in('id', $id);
-        $this->db->delete('tb_det_tracking_driver');
+        $this->db->delete('hrdga_det_tracking_driver');
 
         redirect('deliveriorder');
     }
@@ -629,7 +634,7 @@ class C_Logistik extends CI_Controller
                 'no_urut_hr_i' => $this->input->post('norut')[$i],
             );
         }
-        $this->db->update_batch('tb_op_driver', $result, 'id');
+        $this->db->update_batch('hrdga_op_driver', $result, 'id');
 
         redirect('truckoprational');
     }
