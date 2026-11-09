@@ -18,7 +18,7 @@ class M_Digdocs extends CI_Model
         $this->db->cache_off();
         try {
             $query = $this->db->query(
-                "SELECT a.user_id FROM docsdig_access a JOIN tb_user u ON u.id = a.user_id
+                "SELECT a.user_id FROM hrdga_docsdig_access a JOIN hrdga_user u ON u.id = a.user_id
                  WHERE a.user_id = ? AND a.username = ? AND BINARY u.username = a.username AND u.password <> ''",
                 [(int) $this->session->userdata('id'), $username]
             );
@@ -31,7 +31,7 @@ class M_Digdocs extends CI_Model
 
     public function listing(array $filters, $today, $page, $pageSize)
     {
-        $this->db->from('docsdig_documents');
+        $this->db->from('hrdga_docsdig_documents');
         if ($filters['q'] !== '') {
             $this->db->group_start()->like('title', $filters['q'])
                 ->or_like('document_number', $filters['q'])->or_like('description', $filters['q'])->group_end();
@@ -68,12 +68,12 @@ class M_Digdocs extends CI_Model
 
     public function categories()
     {
-        return $this->rows($this->db->distinct()->select('category')->order_by('category')->get('docsdig_documents'));
+        return $this->rows($this->db->distinct()->select('category')->order_by('category')->get('hrdga_docsdig_documents'));
     }
 
     public function document($id)
     {
-        $query = $this->db->get_where('docsdig_documents', ['id' => $id]);
+        $query = $this->db->get_where('hrdga_docsdig_documents', ['id' => $id]);
         if (!$query) {
             throw new RuntimeException('Data arsip tidak dapat dibaca.');
         }
@@ -84,8 +84,8 @@ class M_Digdocs extends CI_Model
     {
         return $this->rows($this->db->query(
             'SELECT d.id, d.title, d.expires_on, d.reminder_days, d.reminder_frequency, r.occurrence AS last_read
-             FROM docsdig_documents d
-             LEFT JOIN docsdig_reminder_reads r ON r.document_id = d.id AND r.user_id = ?
+             FROM hrdga_docsdig_documents d
+             LEFT JOIN hrdga_docsdig_reminder_reads r ON r.document_id = d.id AND r.user_id = ?
              WHERE DATE_SUB(d.expires_on, INTERVAL d.reminder_days DAY) <= ?
              ORDER BY d.expires_on, d.id',
             [$userId, $today]
@@ -95,8 +95,8 @@ class M_Digdocs extends CI_Model
     public function acknowledge($document, $userId, $occurrence)
     {
         return $this->db->query(
-            'INSERT INTO docsdig_reminder_reads (document_id, user_id, occurrence)
-             SELECT id, ?, ? FROM docsdig_documents WHERE id = ? AND version = ?
+            'INSERT INTO hrdga_docsdig_reminder_reads (document_id, user_id, occurrence)
+             SELECT id, ?, ? FROM hrdga_docsdig_documents WHERE id = ? AND version = ?
              ON DUPLICATE KEY UPDATE occurrence = VALUES(occurrence)',
             [$userId, $occurrence, $document->id, $document->version]
         );
@@ -106,14 +106,14 @@ class M_Digdocs extends CI_Model
     {
         return $this->rows($this->db->select('actor_id, previous_expiry, new_expiry, created_at')
             ->where(['document_id' => $id, 'action' => 'renewed'])
-            ->order_by('id', 'DESC')->get('docsdig_audit'));
+            ->order_by('id', 'DESC')->get('hrdga_docsdig_audit'));
     }
 
     public function create(array $documents, $actor, $action)
     {
         return $this->transaction(function () use ($documents, $actor, $action) {
             foreach ($documents as $data) {
-                if (!$this->db->insert('docsdig_documents', $data)
+                if (!$this->db->insert('hrdga_docsdig_documents', $data)
                     || !$this->audit($this->db->insert_id(), $actor, $action)) {
                     return false;
                 }
@@ -127,9 +127,9 @@ class M_Digdocs extends CI_Model
         return $this->transaction(function () use ($document, $version, $data, $actor, $action) {
             $this->db->where(['id' => $document->id, 'version' => $version]);
             if ($action === 'deleted') {
-                $ok = $this->db->delete('docsdig_documents');
+                $ok = $this->db->delete('hrdga_docsdig_documents');
             } else {
-                $ok = $this->db->update('docsdig_documents', $data + ['version' => $version + 1]);
+                $ok = $this->db->update('hrdga_docsdig_documents', $data + ['version' => $version + 1]);
             }
 
             if (!$ok || $this->db->affected_rows() !== 1) {
@@ -150,7 +150,7 @@ class M_Digdocs extends CI_Model
 
     public function audit($id, $actor, $action, array $dates = [])
     {
-        return $this->db->insert('docsdig_audit', [
+        return $this->db->insert('hrdga_docsdig_audit', [
             'document_id' => $id,
             'actor_id' => $actor,
             'action' => $action,

@@ -4,12 +4,12 @@ Buka **Arsip Dokumen Digital** dari menu `HRD2` atau langsung di `/digdocs`. `GA
 
 ## Migrasi dan akun
 
-1. Cadangkan database aplikasi. Jalankan [digdocs_setup.sql](../database/sql/digdocs_setup.sql) pada database yang dipilih di `application/config/database.php`. Migrasi menambah `docsdig_documents`, `docsdig_access`, `docsdig_audit`, dan `docsdig_reminder_reads` pada MariaDB/MySQL dengan InnoDB.
+1. Skema POS Security membuat `hrdga_docsdig_documents`, `hrdga_docsdig_access`, `hrdga_docsdig_audit`, dan `hrdga_docsdig_reminder_reads`. Impor lokal menyalin dokumen dan grant yang sudah ada. Untuk instalasi baru tanpa data arsip, jalankan [digdocs_setup.sql](../database/sql/digdocs_setup.sql) setelah skema dibuat untuk menyiapkan akun. [Panduan instalasi database](pos-security-database.md)
 2. Periksa hasil SELECT terakhir. Harus ada dua baris, `HRD2` dan `GA1`, dengan departemen `HRD&GA`. Migrasi mempertahankan kata sandi `HRD2` dan membuat `GA1` pada level 2 dengan kolom kata sandi kosong sehingga login ditolak sampai akun diaktifkan.
 3. Masuk sebagai admin IT, buka **User Management**, lalu setel kata sandi unik untuk `GA1`. Gunakan saluran internal yang aman untuk penyerahannya. Pengguna `HRD2` yang sedang login perlu masuk kembali untuk menyegarkan departemen di sesi.
 4. Verifikasi kedua akun dapat membuka arsip. Akun lain, termasuk anggota `HRD&GA` dan admin IT, akan menerima HTTP 403 di endpoint arsip.
 
-Migrasi dapat dijalankan ulang. Hak akses terikat ke ID akun dan nama pengguna persis seperti yang dicatat. Jika `HRD2` ambigu atau `GA1` sudah ada tanpa grant, skrip tidak mengikat akun yang meragukan. Verifikasi identitas akun di `tb_user` sebelum mengoreksi departemen atau menetapkan ID tersebut secara eksplisit di `docsdig_access`. Admin database dan admin yang berwenang mereset kredensial akun merupakan bagian dari batas kepercayaan. Menghapus baris grant mencabut akses pada permintaan berikutnya, termasuk untuk sesi yang sudah aktif.
+Skrip penyiapan akun dapat dijalankan ulang. Hak akses terikat ke ID akun dan nama pengguna persis seperti yang dicatat. Jika `HRD2` ambigu atau `GA1` sudah ada tanpa grant, skrip tidak mengikat akun yang meragukan. Verifikasi identitas akun di `hrdga_user` sebelum mengoreksi departemen atau menetapkan ID tersebut secara eksplisit di `hrdga_docsdig_access`. Admin database dan admin yang berwenang mereset kredensial akun merupakan bagian dari batas kepercayaan. Menghapus baris grant mencabut akses pada permintaan berikutnya, termasuk untuk sesi yang sudah aktif.
 
 ## Penyimpanan dan penyajian lampiran
 
@@ -35,4 +35,4 @@ Dokumen berstatus **Aktif** sebelum jendela pengingat, **Segera Kedaluwarsa** mu
 
 Uji HTTP dijalankan pada database terisolasi dengan skema aplikasi. Cakupannya meliputi login kedua akun, penolakan URL langsung dan AJAX untuk akun lain, CSRF, validasi unggahan, tambah dan impor, penggantian lampiran, unduhan, penghapusan, pencarian, filter, pengingat per akun, konfirmasi perpanjangan, dan audit. Uji kalender mencakup batas akhir bulan dan tahun kabisat. Chrome pada ukuran layar ponsel merender PDF dua halaman tanpa menghubungi origin lain.
 
-Di XAMPP lokal, migrasi telah dijalankan dan endpoint arsip merespons HTTP 403 tanpa login. Kata sandi `HRD2` yang sudah ada dipertahankan. `GA1` menunggu aktivasi melalui User Management.
+Di XAMPP lokal, data arsip telah disalin ke `kiucoid_pos_security` dan lampiran tetap memakai direktori privat yang sama. Kata sandi `HRD2` yang sudah ada dipertahankan. `GA1` menunggu aktivasi melalui User Management.

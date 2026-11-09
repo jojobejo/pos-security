@@ -62,11 +62,7 @@ class M_Logistik extends CI_Model
     }
     public function getnorutdriveractive()
     {
-        $this->db->select('*');
-        $this->db->from('hrdga_op_driver');
-        $this->db->where('status', 'ACTIVE');
-        $this->db->order_by('no_urut_hr_i', 'ASC');
-        return $this->db->get()->result();
+        return $this->get_all_driver();
     }
     public function adddriverbaru($data)
     {
@@ -221,7 +217,7 @@ class M_Logistik extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('hrdga_op_driver');
-        $this->db->where('status', 'ACTIVE');
+        $this->db->where_in('status', ['ACTIVE', '1']);
         $this->db->order_by("no_urut_hr_i", "asc");
         return $this->db->get()->result();
     }

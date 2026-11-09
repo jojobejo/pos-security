@@ -59,6 +59,11 @@ $route['translate_uri_dashes'] = FALSE;
 $route['process']   = 'Auth/process';
 $route['logout']    = 'Auth/logout';
 
+// Arsip Dokumen Digital
+$route['digdocs'] = 'digdocs/C_Digdocs';
+$route['digdocs/(add|save|import|notifications)'] = 'digdocs/C_Digdocs/$1';
+$route['digdocs/(detail|edit|save|renew|delete|preview|download|acknowledge)/(:num)'] = 'digdocs/C_Digdocs/$1/$2';
+
 //Dashboard
 $route['dashboard'] = 'Dashboard';
 $route['konfirm_tamu'] = 'Dashboard/konfirm_tamu';
@@ -161,6 +166,14 @@ $route['riwayat_penerimaan_expedisi/(:num)']    = 'hrd/C_Hrd/riwayat_penerimaan_
 $route['konfirmasi_penerimaan_expedisi']        = 'hrd/C_Hrd/konfirmasi_penerimaan_expedisi';
 $route['export_file_laporan_expedisis']         = 'hrd/C_Hrd/export_data_hrd_lap_expedisi';
 
+$route['hrd_lap_paket_pos']                     = 'hrd/C_Hrd/hrd_lap_penerimaan_pos';
+$route['lap_penerimaan_pos_serverside']         = 'hrd/C_Hrd/lap_penerimaan_pos_serverside';
+$route['tambah_penerimaan_paket']               = 'hrd/C_Hrd/tambah_penerimaan_paket';
+$route['konfirmasi_penerimaan_paket']           = 'hrd/C_Hrd/konfirmasi_penerimaan_paket';
+$route['get_paket_by_id/(:any)']                = 'hrd/C_Hrd/get_paket_by_id/$1';
+$route['edit_penerimaan_paket']                 = 'hrd/C_Hrd/edit_penerimaan_paket';
+$route['hapus_penerimaan_paket']                = 'hrd/C_Hrd/hapus_penerimaan_paket';
+
 $route['hrd_truck_cek']                         = 'hrd/C_Hrd/hrd_truck_cek';
 $route['ajax_truck_checkup_list']               = 'hrd/C_Hrd/ajax_truck_checkup_list';
 $route['ajax_truck_checkup_detail/(:num)']      = 'hrd/C_Hrd/ajax_truck_checkup_detail/$1';
@@ -173,9 +186,16 @@ $route['ajax_mekanik_kategori_detail_list']     = 'hrd/C_Hrd/ajax_mekanik_katego
 $route['ajax_mekanik_kategori_detail_save']     = 'hrd/C_Hrd/ajax_mekanik_kategori_detail_save';
 $route['ajax_mekanik_kategori_detail_delete']   = 'hrd/C_Hrd/ajax_mekanik_kategori_detail_delete';
 
+$route['hrd_chelklist_kendaraan']               = 'hrd/C_Hrd/checklist_kendaraan';
+$route['store_checklist_kendaraan']             = 'hrd/C_Hrd/store_checklist_kendaraan';
+$route['all_laporan_chelist_kendaraan']         = 'hrd/C_Hrd/all_laporan_chelist_kendaraan';
+$route['ajax_checklist_kendaraan']              = 'hrd/C_Hrd/ajax_checklist_kendaraan';
+$route['export_data_checklist_kendaraan']       = 'hrd/C_Hrd/export_laporan_checklist_kendaraan';
+$route['detail_checklist_kendaraan/(:any)']     = 'hrd/C_Hrd/detail_checklist/$1';
+
 //UserAccount
 $route['userAdmin']                             = 'user/Admin';
 $route['updateUser/(:num)']                     = 'user/Admin/update/$1';
 
 // Modul lama memakai skema ERP dan berada di luar POS Security.
-$route['(?i:digdocs|inventaris|kpi|pelanggan|requestdesign|maintenance)(?:/.*)?'] = 'module_unavailable';
+$route['(?i:inventaris|kpi|pelanggan|requestdesign|maintenance)(?:/.*)?'] = 'module_unavailable';

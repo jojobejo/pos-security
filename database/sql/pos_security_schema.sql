@@ -270,3 +270,98 @@ CREATE TABLE `hrdga_expedisi_penerimaan_riwayat` (
   PRIMARY KEY (`id`),
   KEY `idx_riwayat_expedisi` (`expedisi_id`, `diterima_pada`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `hrdga_terima_paket` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tanggal` text NOT NULL,
+  `kd_penerima` varchar(25) NOT NULL,
+  `keterangan_1` text NOT NULL,
+  `keterangan_2` text NOT NULL,
+  `tanggal_terima_1` text NOT NULL,
+  `tanggal_terima_2` text NOT NULL,
+  `jam_terima_1` text NOT NULL,
+  `jam_terima_2` text NOT NULL,
+  `status` int(11) NOT NULL,
+  `inputer` text NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `hrdga_checklist_kendaraan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tanggal_check` date NOT NULL,
+  `driver` varchar(100) DEFAULT NULL,
+  `nopol` varchar(20) DEFAULT NULL,
+  `no_lambung` varchar(50) DEFAULT NULL,
+  `kilometer` int(11) DEFAULT NULL,
+  `inputer` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `hrdga_checklist_kendaraan_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `checklist_id` int(11) NOT NULL,
+  `nama_part` varchar(100) DEFAULT NULL,
+  `kondisi` enum('BAIK','TIDAK BAIK') DEFAULT 'BAIK',
+  `keterangan` varchar(255) DEFAULT NULL,
+  `kategori` varchar(50) DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `checklist_id` (`checklist_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `hrdga_gbrupload_cheklist` (
+  `id_upload` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cheklist` int(11) NOT NULL,
+  `name_file` text NOT NULL,
+  `path` text NOT NULL,
+  `tgl_create` date NOT NULL,
+  PRIMARY KEY (`id_upload`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE hrdga_docsdig_access (
+    username VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin PRIMARY KEY,
+    user_id INT NOT NULL UNIQUE,
+    CONSTRAINT hrdga_docsdig_access_user FOREIGN KEY (user_id) REFERENCES hrdga_user (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE hrdga_docsdig_documents (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    document_number VARCHAR(100) DEFAULT NULL,
+    description TEXT,
+    issued_on DATE DEFAULT NULL,
+    expires_on DATE DEFAULT NULL,
+    recurrence ENUM('none', 'daily', 'weekly', 'monthly', 'yearly') NOT NULL DEFAULT 'none',
+    reminder_days SMALLINT UNSIGNED NOT NULL DEFAULT 30,
+    reminder_frequency ENUM('daily', 'weekly', 'monthly') NOT NULL DEFAULT 'daily',
+    original_name VARCHAR(255) NOT NULL,
+    storage_name CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL UNIQUE,
+    mime_type VARCHAR(100) NOT NULL,
+    version INT UNSIGNED NOT NULL DEFAULT 1,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY hrdga_docsdig_category (category),
+    KEY hrdga_docsdig_expiry (expires_on)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE hrdga_docsdig_audit (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    document_id INT UNSIGNED NOT NULL,
+    actor_id INT NOT NULL,
+    action VARCHAR(24) NOT NULL,
+    previous_expiry DATE DEFAULT NULL,
+    new_expiry DATE DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    KEY hrdga_docsdig_audit_document (document_id, action, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE hrdga_docsdig_reminder_reads (
+    document_id INT UNSIGNED NOT NULL,
+    user_id INT NOT NULL,
+    occurrence CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    PRIMARY KEY (document_id, user_id),
+    CONSTRAINT hrdga_docsdig_read_document FOREIGN KEY (document_id) REFERENCES hrdga_docsdig_documents (id) ON DELETE CASCADE,
+    CONSTRAINT hrdga_docsdig_read_user FOREIGN KEY (user_id) REFERENCES hrdga_user (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

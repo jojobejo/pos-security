@@ -39,14 +39,30 @@ class Auth extends CI_Controller
 
                     if (in_array($key->username, ['HRD2', 'GA1'], true)) {
                         $this->session->sess_regenerate(true);
+                        $this->session->unset_userdata('digdocs_csrf');
                     }
 
-                    $this->session->set_userdata($data_session);
-                    if ($key->username === 'yunika' && $key->departemen === 'LOGISTIK') {
+                    if ($key->username === 'GA1' && $key->departemen === 'HRD&GA') {
+                        $this->session->set_userdata($data_session);
+                        redirect('digdocs');
+                    } elseif (strtolower($key->username) === 'alif') {
+                        $this->session->set_userdata($data_session);
+                        redirect('hrd_lap_paket_pos');
+                    } elseif ($key->username === 'yunika' && $key->departemen === 'LOGISTIK') {
+                        $this->session->set_userdata($data_session);
                         redirect('hrd_lap_expedisi');
-                    } elseif ($key->departemen === 'HRD & GA' || strtolower($key->username) === 'marisa') {
-                        redirect('hrd_lap_tamu');
+                    } elseif ($key->departemen == 'KEUANGAN'
+                        || ($key->username === 'HRD2' && $key->departemen === 'HRD&GA')) {
+                        $this->session->set_userdata($data_session);
+                        redirect('hrd_lap_paket_pos');
+                    } elseif ($key->departemen == 'MIA') {
+                        $this->session->set_userdata($data_session);
+                        redirect('hrd_lap_paket_pos');
+                    } elseif ($key->departemen == 'HRD & GA') {
+                        $this->session->set_userdata($data_session);
+                        redirect('hrd_lap_paket_pos');
                     } else {
+                        $this->session->set_userdata($data_session);
                         redirect('dashboard');
                     }
                 } else {

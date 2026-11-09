@@ -15,6 +15,21 @@
           <!-- Add icons to the links using the .nav-icon class
           with font-awesome or any other icon font library -->
 
+          <?php if (in_array($this->session->userdata('username'), ['HRD2', 'GA1'], true)) : ?>
+            <?php
+            $digdocsApp =& get_instance();
+            $digdocsApp->load->model('M_Digdocs');
+            ?>
+            <?php if ($digdocsApp->M_Digdocs->can_access()) : ?>
+              <li class="nav-item">
+                <a href="<?= html_escape(site_url('digdocs')) ?>" class="nav-link">
+                  <i class="nav-icon fas fa-archive"></i>
+                  <p>Arsip Dokumen Digital</p>
+                </a>
+              </li>
+            <?php endif; ?>
+          <?php endif; ?>
+
           <!-- START AKSES LV 1 -->
           <?php if ($this->session->userdata('akses_lv') == '1' && $this->session->userdata('departemen') == 'IT') : ?>
             <li class="nav-item">
@@ -28,6 +43,21 @@
             <!-- END AKSES LV 1 -->
 
             <!-- START AKSES LV 1 USER ADM LOGISTIK -->
+          <?php elseif (in_array(strtolower((string) $this->session->userdata('username')), ['alif', 'marisa'], true)) : ?>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_paket_pos') ?>" class="nav-link">
+                <i class="nav-icon fa fa-box"></i>
+                <p>Laporan Penerimaan Paket</p>
+              </a>
+            </li>
+            <?php if (strtolower((string) $this->session->userdata('username')) === 'marisa') : ?>
+              <li class="nav-item">
+                <a href="<?php echo base_url('hrd_lap_tamu') ?>" class="nav-link">
+                  <i class="nav-icon fa fa-id-badge"></i>
+                  <p>Laporan Tamu</p>
+                </a>
+              </li>
+            <?php endif; ?>
           <?php elseif ($this->session->userdata('akses_lv') == '1' && $this->session->userdata('departemen') == 'LOGISTIK') : ?>
             <li class="nav-item">
               <a href="<?php echo base_url('truckoprational') ?>" class="nav-link">
@@ -146,6 +176,14 @@
                 </p>
               </a>
             </li>
+            <?php if ($this->session->userdata('username') === 'HRD2') : ?>
+              <li class="nav-item">
+                <a href="<?= base_url('hrd_lap_paket_pos') ?>" class="nav-link">
+                  <i class="nav-icon fa fa-box"></i>
+                  <p>Laporan Penerimaan Paket</p>
+                </a>
+              </li>
+            <?php endif; ?>
 
           <?php elseif ($this->session->userdata('akses_lv') == '2' && $this->session->userdata('departemen') == 'HRD GA' && $this->session->userdata('username') == 'HRD4') : ?>
             <li class="nav-item">
@@ -189,6 +227,22 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="<?php echo base_url('hrd_chelklist_kendaraan') ?>" class="nav-link">
+                <i class="nav-icon fa fa-car"></i>
+                <p>
+                  Checklist Kendaraan
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_paket_pos') ?>" class="nav-link">
+                <i class="nav-icon fa fa-box"></i>
+                <p>
+                  Laporan Penerimaan Paket
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="<?php echo base_url('hrd_lap_issue') ?>" class="nav-link">
                 <i class="nav-icon fa fa-exclamation-triangle"></i>
                 <p>
@@ -199,9 +253,33 @@
             <!-- END AKSES LV 2 USER HRD -->
 
             <!-- START AKSES LV2 USER ADMLOBY -->
-          <?php elseif (($this->session->userdata('akses_lv') == '2'
-              && $this->session->userdata('departemen') == 'HRD & GA')
-              || strtolower((string) $this->session->userdata('username')) === 'marisa') : ?>
+          <?php elseif ($this->session->userdata('akses_lv') == '2' && $this->session->userdata('departemen') == 'KEUANGAN') : ?>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_paket_pos') ?>" class="nav-link">
+                <i class="nav-icon fa fa-box"></i>
+                <p>
+                  Laporan Penerimaan Paket
+                </p>
+              </a>
+            </li>
+          <?php elseif ($this->session->userdata('akses_lv') == '2' && $this->session->userdata('departemen') == 'MIA') : ?>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_paket_pos') ?>" class="nav-link">
+                <i class="nav-icon fa fa-box"></i>
+                <p>
+                  Laporan Penerimaan Paket
+                </p>
+              </a>
+            </li>
+
+          <?php elseif ($this->session->userdata('akses_lv') == '2' && $this->session->userdata('departemen') == 'HRD & GA') : ?>
+
+            <li class="nav-item">
+              <a href="<?= base_url('hrd_lap_paket_pos') ?>" class="nav-link">
+                <i class="nav-icon fa fa-box"></i>
+                <p>Laporan Penerimaan Paket</p>
+              </a>
+            </li>
             <li class="nav-item">
               <a href="<?php echo base_url('hrd_lap_tamu') ?>" class="nav-link">
                 <i class="nav-icon fa fa-id-badge"></i>

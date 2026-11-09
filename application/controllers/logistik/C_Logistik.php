@@ -489,6 +489,7 @@ class C_Logistik extends CI_Controller
         header('Content-Disposition: attachment; filename="rekap_tracking_driver.xlsx"');
         header('Cache-Control: max-age=0');
 
+        PHPExcel_Shared_File::setUseUploadTempDirectory(true);
         $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }
@@ -619,6 +620,7 @@ class C_Logistik extends CI_Controller
         header('Content-Disposition: attachment; filename="laporan_keluar_masuk_kendaraan.xlsx"');
         header('Cache-Control: max-age=0');
 
+        PHPExcel_Shared_File::setUseUploadTempDirectory(true);
         $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }
@@ -857,6 +859,7 @@ class C_Logistik extends CI_Controller
         header('Content-Disposition: attachment; filename="rekap_driver_order.xlsx"');
         header('Cache-Control: max-age=0');
 
+        PHPExcel_Shared_File::setUseUploadTempDirectory(true);
         $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }

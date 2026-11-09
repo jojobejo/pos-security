@@ -104,11 +104,11 @@
                                                 <a href="#" class="btn btn-danger btn-sm ml-2 " data-toggle="modal" data-target="#hapusdriver<?= $d->id ?>">
                                                     <i class="fa fa-solid fa-trash-alt"></i>
                                                 </a>
-                                                <?php if ($d->status == 'ACTIVE') : ?>
+                                                <?php if (in_array((string) $d->status, ['ACTIVE', '1'], true)) : ?>
                                                     <a href="<?= base_url('nonactivedriver/') . $d->kd_driver  ?>" class="btn btn-warning btn-sm ml-2 ">
                                                         <i class="fa fa-solid fa-ban"></i>
                                                     </a>
-                                                <?php elseif ($d->status == 'NON-ACTIVE') : ?>
+                                                <?php elseif (in_array((string) $d->status, ['NON-ACTIVE', '0'], true)) : ?>
                                                     <a href="<?= base_url('activedrver/') . $d->kd_driver ?>" class="btn btn-success btn-sm ml-2">
                                                         <i class="fa fa-solid fa-user-check"></i>
                                                     </a>
