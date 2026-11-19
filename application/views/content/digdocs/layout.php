@@ -19,6 +19,8 @@
                 <a class="btn btn-sm btn-outline-light mr-2 my-1" href="<?= html_escape(site_url('digdocs/notifications')) ?>">Pengingat</a>
                 <?php if ($this->session->userdata('username') === 'HRD2'): ?>
                     <a class="btn btn-sm btn-outline-light mr-2 my-1" href="<?= html_escape(site_url('hrd_lap_paket_pos')) ?>">Paket POS</a>
+                <?php elseif ($this->session->userdata('username') === 'admin'): ?>
+                    <a class="btn btn-sm btn-outline-light mr-2 my-1" href="<?= html_escape(site_url('dashboard')) ?>">Dashboard</a>
                 <?php endif; ?>
                 <a class="btn btn-sm btn-outline-light my-1" href="<?= html_escape(site_url('logout')) ?>">Keluar</a>
             </nav>

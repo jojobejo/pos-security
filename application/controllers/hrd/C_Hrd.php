@@ -12,6 +12,15 @@ class C_Hrd extends CI_Controller
         $this->load->helper('tanggal_helper');
     }
 
+    // Cek apakah akun yang login adalah superadmin (admin IT level 1)
+    private function is_superadmin()
+    {
+        return $this->session->userdata('status') === 'is_login'
+            && $this->session->userdata('username') === 'admin'
+            && (string) $this->session->userdata('akses_lv') === '1'
+            && $this->session->userdata('departemen') === 'IT';
+    }
+
     public function index()
     {
         redirect('dashboard');
@@ -492,8 +501,8 @@ class C_Hrd extends CI_Controller
         $data['page_title'] = 'KARISMA';
         $data['laporan']    = $this->M_Hrd->get_all_laporan_expedisi()->result();
         $data['penerima_berkas'] = $this->M_Hrd->get_penerima_berkas_logistik();
-        $data['is_hrd4'] = $this->session->userdata('username') === 'HRD4';
-        $data['is_logistik'] = $this->session->userdata('departemen') === 'LOGISTIK';
+        $data['is_hrd4'] = $this->session->userdata('username') === 'HRD4' || $this->is_superadmin();
+        $data['is_logistik'] = $this->session->userdata('departemen') === 'LOGISTIK' || $this->is_superadmin();
 
         $this->load->view('partial/main/header.php', $data);
         $this->load->view('content/hrd/lapexpedisibody.php', $data);
@@ -527,7 +536,20 @@ class C_Hrd extends CI_Controller
                 : '<span class="badge badge-warning">Belum Diterima</span>';
             $row[] = $l->diterima_pada ? date('d-m-Y H:i', strtotime($l->diterima_pada)) : '-';
 
-            if ($this->session->userdata('username') === 'HRD4') {
+            if ($this->is_superadmin()) {
+                $aksi = '
+                <button class="btn btn-warning btn-sm btn-edit" data-id="' . $l->id . '">
+                    <i class="fa fa-pencil-alt"></i>
+                </button>
+                <button class="btn btn-danger btn-sm btn-hapus" data-id="' . $l->id . '">
+                    <i class="fa fa-trash-alt"></i>
+                </button>
+                <button class="btn btn-info btn-sm btn-riwayat" data-id="' . $l->id . '"><i class="fa fa-history"></i> Riwayat</button>';
+                if ($l->status_berkas === 'BELUM_DITERIMA') {
+                    $aksi .= ' <button class="btn btn-success btn-sm btn-terima" data-id="' . $l->id . '"><i class="fa fa-check"></i> Konfirmasi</button>';
+                }
+                $row[] = $aksi;
+            } elseif ($this->session->userdata('username') === 'HRD4') {
                 $row[] = '
                 <button class="btn btn-warning btn-sm btn-edit" data-id="' . $l->id . '">
                     <i class="fa fa-pencil-alt"></i>
@@ -572,7 +594,8 @@ class C_Hrd extends CI_Controller
 
     public function konfirmasi_penerimaan_expedisi()
     {
-        if ($this->session->userdata('departemen') !== 'LOGISTIK') {
+        $isSuperadmin = $this->is_superadmin();
+        if ($this->session->userdata('departemen') !== 'LOGISTIK' && !$isSuperadmin) {
             show_error('Akses konfirmasi hanya untuk petugas Logistik.', 403);
             return;
         }
@@ -582,7 +605,8 @@ class C_Hrd extends CI_Controller
         $berhasil = $this->M_Hrd->konfirmasi_penerimaan_expedisi(
             $expedisiId,
             (int) $this->session->userdata('id'),
-            $catatan
+            $catatan,
+            $isSuperadmin
         );
 
         echo json_encode([
@@ -595,7 +619,7 @@ class C_Hrd extends CI_Controller
 
     public function tambah_lap_expedisi()
     {
-        if ($this->session->userdata('username') !== 'HRD4') {
+        if ($this->session->userdata('username') !== 'HRD4' && !$this->is_superadmin()) {
             show_error('Input laporan expedisi hanya untuk HRD4.', 403);
             return;
         }
@@ -645,7 +669,7 @@ class C_Hrd extends CI_Controller
 
     public function edit_lap_expedisi()
     {
-        if ($this->session->userdata('username') !== 'HRD4') {
+        if ($this->session->userdata('username') !== 'HRD4' && !$this->is_superadmin()) {
             show_error('Perubahan laporan expedisi hanya untuk HRD4.', 403);
             return;
         }
@@ -691,7 +715,7 @@ class C_Hrd extends CI_Controller
 
     public function hapus_lap_expedisi()
     {
-        if ($this->session->userdata('username') !== 'HRD4') {
+        if ($this->session->userdata('username') !== 'HRD4' && !$this->is_superadmin()) {
             show_error('Hapus laporan expedisi hanya untuk HRD4.', 403);
             return;
         }
@@ -1735,7 +1759,7 @@ class C_Hrd extends CI_Controller
 
         $data = [
             'tanggal'          => $this->input->post('tanggal'),
-            'kd_penerima'      => in_array($username, ['HRD2', 'HRD4'], true)
+            'kd_penerima'      => in_array($username, ['HRD2', 'HRD4', 'ADMIN'], true)
                 ? $this->input->post('kd_penerima')
                 : $username,
             'keterangan_1'     => $this->input->post('keterangan_1'),
@@ -1782,7 +1806,7 @@ class C_Hrd extends CI_Controller
 
         $data = [
             'tanggal'            => $this->input->post('tanggal'),
-            'kd_penerima'        => in_array($username, ['HRD2', 'HRD4'], true)
+            'kd_penerima'        => in_array($username, ['HRD2', 'HRD4', 'ADMIN'], true)
                 ? $this->input->post('kd_penerima')
                 : $username,
             'keterangan_1'       => $this->input->post('keterangan_1'),

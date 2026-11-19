@@ -28,11 +28,13 @@ class Digdocs_storage
         $directory = realpath($configured);
         $webRoot = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
         $project = realpath(FCPATH);
-        $mode = $directory ? fileperms($directory) : false;
+        // Windows uses NTFS ACLs; fileperms() does not describe those permissions.
+        $mode = $directory && PHP_OS_FAMILY !== 'Windows' ? fileperms($directory) : null;
         // macOS ACLs can allow adding and deleting files even when is_writable() returns false.
         // Check write access through the actual upload and deletion operations.
         if (!$directory || !$webRoot || !is_dir($directory)
-            || !is_readable($directory) || $mode === false || ($mode & 0077) !== 0
+            || !is_readable($directory)
+            || (PHP_OS_FAMILY !== 'Windows' && ($mode === false || ($mode & 0077) !== 0))
             || $this->within($directory, $webRoot) || $this->within($directory, $project)
             || $this->within($webRoot, $directory) || $this->within($project, $directory)) {
             throw new RuntimeException('Penyimpanan privat arsip belum tersedia.');
@@ -81,7 +83,8 @@ class Digdocs_storage
         if (!@move_uploaded_file($tmp, $path)) {
             throw new RuntimeException('Lampiran gagal disimpan.');
         }
-        if (!@chmod($path, 0600)) {
+        // On Windows the attachment inherits the private directory's NTFS ACL.
+        if (PHP_OS_FAMILY !== 'Windows' && !@chmod($path, 0600)) {
             $this->remove($key);
             throw new RuntimeException('Izin penyimpanan lampiran tidak dapat diatur.');
         }
@@ -120,7 +123,13 @@ class Digdocs_storage
 
     private function within($path, $root)
     {
-        return $path === $root || strpos($path, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR) === 0;
+        $path = str_replace('\\', '/', $path);
+        $root = str_replace('\\', '/', $root);
+        if (PHP_OS_FAMILY === 'Windows') {
+            $path = strtolower($path);
+            $root = strtolower($root);
+        }
+        return $path === $root || strpos($path, rtrim($root, '/') . '/') === 0;
     }
 
     private function is_office_package($path, $entry)

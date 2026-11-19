@@ -7,7 +7,7 @@ class M_Digdocs extends CI_Model
     {
         $username = $this->session->userdata('username');
         if ($this->session->userdata('status') !== 'is_login'
-            || !in_array($username, ['HRD2', 'GA1'], true)
+            || !in_array($username, ['HRD2', 'GA1', 'admin'], true)
             || (int) $this->session->userdata('id') <= 0) {
             return false;
         }

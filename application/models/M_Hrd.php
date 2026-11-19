@@ -145,12 +145,14 @@ class M_Hrd extends CI_Model
             ->result();
     }
 
-    public function konfirmasi_penerimaan_expedisi($expedisiId, $penerimaId, $catatan)
+    public function konfirmasi_penerimaan_expedisi($expedisiId, $penerimaId, $catatan, $bypassPenerimaCheck = false)
     {
         $this->db->trans_start();
 
         $this->db->where('id', $expedisiId);
-        $this->db->where('penerima_berkas_id', $penerimaId);
+        if (!$bypassPenerimaCheck) {
+            $this->db->where('penerima_berkas_id', $penerimaId);
+        }
         $this->db->where('status_berkas', 'BELUM_DITERIMA');
         $this->db->update('hrdga_expedisi', [
             'status_berkas' => 'SUDAH_DITERIMA',
@@ -551,7 +553,7 @@ class M_Hrd extends CI_Model
     {
         $username = strtoupper(trim((string) $username));
 
-        if (in_array($username, ['HRD2', 'HRD4'], true)) {
+        if (in_array($username, ['HRD2', 'HRD4', 'ADMIN'], true)) {
             return;
         }
 

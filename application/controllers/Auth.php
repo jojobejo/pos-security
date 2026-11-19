@@ -37,7 +37,7 @@ class Auth extends CI_Controller
                         'status'      => "is_login"
                     );
 
-                    if (in_array($key->username, ['HRD2', 'GA1'], true)) {
+                    if (in_array($key->username, ['HRD2', 'GA1', 'admin'], true)) {
                         $this->session->sess_regenerate(true);
                         $this->session->unset_userdata('digdocs_csrf');
                     }

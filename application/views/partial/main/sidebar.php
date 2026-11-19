@@ -15,7 +15,7 @@
           <!-- Add icons to the links using the .nav-icon class
           with font-awesome or any other icon font library -->
 
-          <?php if (in_array($this->session->userdata('username'), ['HRD2', 'GA1'], true)) : ?>
+          <?php if (in_array($this->session->userdata('username'), ['HRD2', 'GA1', 'admin'], true)) : ?>
             <?php
             $digdocsApp =& get_instance();
             $digdocsApp->load->model('M_Digdocs');
@@ -30,14 +30,118 @@
             <?php endif; ?>
           <?php endif; ?>
 
-          <!-- START AKSES LV 1 -->
+          <!-- START AKSES LV 1 (SUPERADMIN / IT) -->
           <?php if ($this->session->userdata('akses_lv') == '1' && $this->session->userdata('departemen') == 'IT') : ?>
+            <li class="nav-item">
+              <a href="<?php echo base_url('dashboard') ?>" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
             <li class="nav-item">
               <a href="<?php echo base_url('userAdmin') ?>" class="nav-link">
                 <i class="nav-icon fa fa-user"></i>
-                <p>
-                  User Management
-                </p>
+                <p>User Management</p>
+              </a>
+            </li>
+
+            <li class="nav-header">LOGISTIK</li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('truckoprational') ?>" class="nav-link">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <p>Truck Oprational</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('deliveriorder') ?>" class="nav-link">
+                <i class="nav-icon fa fa-shipping-fast"></i>
+                <p>Delivery Order</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('tmp_logistik_distribusi') ?>" class="nav-link">
+                <i class="nav-icon fa fa-truck"></i>
+                <p>Data Logistik Distribusi</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('tracking_driver') ?>" class="nav-link">
+                <i class="nav-icon fa fa-route"></i>
+                <p>Driver Tracking</p>
+              </a>
+            </li>
+
+            <li class="nav-header">HRD &amp; GA / POS SECURITY</li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_distribusi') ?>" class="nav-link">
+                <i class="nav-icon fa fa-car-side"></i>
+                <p>Laporan Distribusi</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_tamu') ?>" class="nav-link">
+                <i class="nav-icon fa fa-id-badge"></i>
+                <p>Laporan Tamu</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_add_tamu') ?>" class="nav-link">
+                <i class="nav-icon fa fa-user-plus"></i>
+                <p>Input Laporan Tamu</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_data_truk') ?>" class="nav-link">
+                <i class="nav-icon fa fa-tools"></i>
+                <p>Data Service Truk</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_truck_cek') ?>" class="nav-link">
+                <i class="nav-icon fa fa-wrench"></i>
+                <p>General Checkup Truck</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_chelklist_kendaraan') ?>" class="nav-link">
+                <i class="nav-icon fa fa-car"></i>
+                <p>Checklist Kendaraan</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('all_laporan_chelist_kendaraan') ?>" class="nav-link">
+                <i class="nav-icon fa fa-clipboard-check"></i>
+                <p>Laporan Checklist Kendaraan</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_Karyawan_KM') ?>" class="nav-link">
+                <i class="nav-icon fa fa-people-arrows"></i>
+                <p>Laporan Karyawan K-M</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_expedisi') ?>" class="nav-link">
+                <i class="nav-icon fa fa-truck-loading"></i>
+                <p>Laporan Expedisi</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_paket_pos') ?>" class="nav-link">
+                <i class="nav-icon fa fa-box"></i>
+                <p>Laporan Penerimaan Paket</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_lap_issue') ?>" class="nav-link">
+                <i class="nav-icon fa fa-exclamation-triangle"></i>
+                <p>Laporan Issue</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="<?php echo base_url('hrd_all_karyawan') ?>" class="nav-link">
+                <i class="nav-icon fa fa-users"></i>
+                <p>Data Karyawan</p>
               </a>
             </li>
             <!-- END AKSES LV 1 -->
